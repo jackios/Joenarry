@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.wdiodeumtService.mapper.WdiodeumtServiceMapper">
+    
+    <resultMap type="WdiodeumtService" id="WdiodeumtServiceResult">
+        <result property="id"    column="id"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="description"    column="description"    />
+        <result property="dataTime"    column="data_time"    />
+        <result property="wid"    column="wid"    />
+        <result property="wiport"    column="wiport"    />
+        <result property="woport"    column="woport"    />
+        <result property="protocol"    column="protocol"    />
+        <result property="allowIp"    column="allow_ip"    />
+        <result property="inParmsa"    column="in_parmsa"    />
+        <result property="inParmsb"    column="in_parmsb"    />
+        <result property="outParms"    column="out_parms"    />
+        <result property="logEnable"    column="log_enable"    />
+        <result property="logfile"    column="logfile"    />
+        <result property="isEnable"    column="is_enable"    />
+    </resultMap>
+	
+	<sql id="selectWdiodeumtServiceVo">
+        select id, service_name, description, data_time, wid, wiport, woport, protocol, allow_ip, in_parmsa, in_parmsb, out_parms, log_enable, logfile, is_enable from proc_wdiodeumt_service
+    </sql>
+	
+    <select id="selectWdiodeumtServiceList" parameterType="WdiodeumtService" resultMap="WdiodeumtServiceResult">
+        <include refid="selectWdiodeumtServiceVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="serviceName != null  and serviceName != '' "> and service_name = #{serviceName}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="dataTime != null "> and data_time = #{dataTime}</if>
+             <if test="wid != null  and wid != '' "> and wid = #{wid}</if>
+             <if test="wiport != null  and wiport != '' "> and wiport = #{wiport}</if>
+             <if test="woport != null  and woport != '' "> and woport = #{woport}</if>
+             <if test="protocol != null  and protocol != '' "> and protocol = #{protocol}</if>
+             <if test="allowIp != null  and allowIp != '' "> and allow_ip = #{allowIp}</if>
+             <if test="inParmsa != null  and inParmsa != '' "> and in_parmsa = #{inParmsa}</if>
+             <if test="inParmsb != null  and inParmsb != '' "> and in_parmsb = #{inParmsb}</if>
+             <if test="outParms != null  and outParms != '' "> and out_parms = #{outParms}</if>
+             <if test="logEnable != null  and logEnable != '' "> and log_enable = #{logEnable}</if>
+             <if test="logfile != null  and logfile != '' "> and logfile = #{logfile}</if>
+             <if test="isEnable != null  and isEnable != '' "> and is_enable = #{isEnable}</if>
+         </where>
+    </select>
+    
+    <select id="selectWdiodeumtServiceById" parameterType="Integer" resultMap="WdiodeumtServiceResult">
+        <include refid="selectWdiodeumtServiceVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectWdiodeumtServiceByServiceName" parameterType="String" resultMap="WdiodeumtServiceResult">
+        <include refid="selectWdiodeumtServiceVo"/>
+        where service_name = #{serviceName}
+    </select>
+    <select id="selectWdiodeumtServiceByWid" parameterType="String" resultMap="WdiodeumtServiceResult">
+        <include refid="selectWdiodeumtServiceVo"/>
+        where wid = #{wid}
+    </select>
+    <insert id="insertWdiodeumtService" parameterType="WdiodeumtService" keyProperty="id" useGeneratedKeys="true">
+        insert into proc_wdiodeumt_service
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="serviceName != null  and serviceName != ''  ">service_name,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="dataTime != null  ">data_time,</if>
+			<if test="wid != null  and wid != ''  ">wid,</if>
+			<if test="wiport != null  and wiport != ''  ">wiport,</if>
+			<if test="woport != null  and woport != ''  ">woport,</if>
+			<if test="protocol != null  and protocol != ''  ">protocol,</if>
+			<if test="allowIp != null  and allowIp != ''  ">allow_ip,</if>
+			<if test="inParmsa != null  and inParmsa != ''  ">in_parmsa,</if>
+			<if test="inParmsb != null  and inParmsb != ''  ">in_parmsb,</if>
+			<if test="outParms != null  and outParms != ''  ">out_parms,</if>
+			<if test="logEnable != null  and logEnable != ''  ">log_enable,</if>
+			<if test="logfile != null  and logfile != ''  ">logfile,</if>
+			<if test="isEnable != null  and isEnable != ''  ">is_enable,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="serviceName != null  and serviceName != ''  ">#{serviceName},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="dataTime != null  ">#{dataTime},</if>
+			<if test="wid != null  and wid != ''  ">#{wid},</if>
+			<if test="wiport != null  and wiport != ''  ">#{wiport},</if>
+			<if test="woport != null  and woport != ''  ">#{woport},</if>
+			<if test="protocol != null  and protocol != ''  ">#{protocol},</if>
+			<if test="allowIp != null  and allowIp != ''  ">#{allowIp},</if>
+			<if test="inParmsa != null  and inParmsa != ''  ">#{inParmsa},</if>
+			<if test="inParmsb != null  and inParmsb != ''  ">#{inParmsb},</if>
+			<if test="outParms != null  and outParms != ''  ">#{outParms},</if>
+			<if test="logEnable != null  and logEnable != ''  ">#{logEnable},</if>
+			<if test="logfile != null  and logfile != ''  ">#{logfile},</if>
+			<if test="isEnable != null  and isEnable != ''  ">#{isEnable},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWdiodeumtService" parameterType="WdiodeumtService">
+        update proc_wdiodeumt_service
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serviceName != null  and serviceName != ''  ">service_name = #{serviceName},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="dataTime != null  ">data_time = #{dataTime},</if>
+            <if test="wid != null  and wid != ''  ">wid = #{wid},</if>
+            <if test="wiport != null  and wiport != ''  ">wiport = #{wiport},</if>
+            <if test="woport != null  and woport != ''  ">woport = #{woport},</if>
+            <if test="protocol != null  and protocol != ''  ">protocol = #{protocol},</if>
+            <if test="allowIp != null  and allowIp != ''  ">allow_ip = #{allowIp},</if>
+            <if test="inParmsa != null  and inParmsa != ''  ">in_parmsa = #{inParmsa},</if>
+            <if test="inParmsb != null  and inParmsb != ''  ">in_parmsb = #{inParmsb},</if>
+            <if test="outParms != null  and outParms != ''  ">out_parms = #{outParms},</if>
+            <if test="logEnable != null  and logEnable != ''  ">log_enable = #{logEnable},</if>
+            <if test="logfile != null  ">logfile = #{logfile},</if>
+            <if test="isEnable != null  and isEnable != ''  ">is_enable = #{isEnable},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteWdiodeumtServiceById" parameterType="Integer">
+        delete from proc_wdiodeumt_service where id = #{id}
+    </delete>
+	
+    <delete id="deleteWdiodeumtServiceByIds" parameterType="String">
+        delete from proc_wdiodeumt_service where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="truncateTable">
+        truncate table proc_wdiodeumt_service
+    </update>
+</mapper>

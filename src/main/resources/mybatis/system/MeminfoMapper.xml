@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.system.user.mapper.MeminfoMapper">
+    
+    <resultMap type="Meminfo" id="MeminfoResult">
+        <result property="id"    column="id"    />
+        <result property="total"    column="total"    />
+        <result property="used"    column="used"    />
+        <result property="free"    column="free"    />
+        <result property="shared"    column="shared"    />
+        <result property="buffCache"    column="buff_cache"    />
+        <result property="avaliable"    column="avaliable"    />
+        <result property="dataTime"    column="data_time"    />
+        <result property="suffix"    column="suffix"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectMeminfoVo">
+        select id, total, used, free, shared, buff_cache, avaliable, data_time, suffix, col1, col2, col3 from proc_meminfo
+    </sql>
+	
+    <select id="selectMeminfoList" parameterType="Meminfo" resultMap="MeminfoResult">
+        <include refid="selectMeminfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="total != null "> and total = #{total}</if>
+             <if test="used != null "> and used = #{used}</if>
+             <if test="free != null "> and free = #{free}</if>
+             <if test="shared != null "> and shared = #{shared}</if>
+             <if test="buffCache != null "> and buff_cache = #{buffCache}</if>
+             <if test="avaliable != null "> and avaliable = #{avaliable}</if>
+             <if test="dataTime != null "> and data_time = #{dataTime}</if>
+             <if test="suffix != null  and suffix != '' "> and suffix = #{suffix}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+        ORDER BY data_time DESC LIMIT 15
+    </select>
+    
+    <select id="selectMeminfoById" parameterType="Integer" resultMap="MeminfoResult">
+        <include refid="selectMeminfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMeminfo" parameterType="Meminfo">
+        insert into proc_meminfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="total != null  ">total,</if>
+			<if test="used != null  ">used,</if>
+			<if test="free != null  ">free,</if>
+			<if test="shared != null  ">shared,</if>
+			<if test="buffCache != null  ">buff_cache,</if>
+			<if test="avaliable != null  ">avaliable,</if>
+			<if test="dataTime != null  ">data_time,</if>
+			<if test="suffix != null  and suffix != ''  ">suffix,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="total != null  ">#{total},</if>
+			<if test="used != null  ">#{used},</if>
+			<if test="free != null  ">#{free},</if>
+			<if test="shared != null  ">#{shared},</if>
+			<if test="buffCache != null  ">#{buffCache},</if>
+			<if test="avaliable != null  ">#{avaliable},</if>
+			<if test="dataTime != null  ">#{dataTime},</if>
+			<if test="suffix != null  and suffix != ''  ">#{suffix},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMeminfo" parameterType="Meminfo">
+        update proc_meminfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="total != null  ">total = #{total},</if>
+            <if test="used != null  ">used = #{used},</if>
+            <if test="free != null  ">free = #{free},</if>
+            <if test="shared != null  ">shared = #{shared},</if>
+            <if test="buffCache != null  ">buff_cache = #{buffCache},</if>
+            <if test="avaliable != null  ">avaliable = #{avaliable},</if>
+            <if test="dataTime != null  ">data_time = #{dataTime},</if>
+            <if test="suffix != null  and suffix != ''  ">suffix = #{suffix},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteMeminfoById" parameterType="Integer">
+        delete from proc_meminfo where id = #{id}
+    </delete>
+	
+    <delete id="deleteMeminfoByIds" parameterType="String">
+        delete from proc_meminfo where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

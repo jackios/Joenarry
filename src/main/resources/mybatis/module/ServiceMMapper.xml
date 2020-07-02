@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.serviceM.mapper.ServiceMMapper">
+    
+    <resultMap type="ServiceM" id="ServiceMResult">
+        <result property="id"    column="id"    />
+        <result property="serviceKey"    column="service_key"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="serviceComment"    column="service_comment"    />
+        <result property="isValid"    column="is_valid"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectServiceMVo">
+        select id, service_key, service_name, service_type, service_comment, is_valid, col1, col2, col3 from proc_service_m
+    </sql>
+	
+    <select id="selectServiceMList" parameterType="ServiceM" resultMap="ServiceMResult">
+        <include refid="selectServiceMVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="serviceKey != null  and serviceKey != '' "> and service_key = #{serviceKey}</if>
+             <if test="serviceName != null  and serviceName != '' "> and service_name = #{serviceName}</if>
+             <if test="serviceType != null  and serviceType != '' "> and service_type = #{serviceType}</if>
+             <if test="serviceComment != null  and serviceComment != '' "> and service_comment = #{serviceComment}</if>
+             <if test="isValid != null  and isValid != '' "> and is_valid = #{isValid}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectServiceMById" parameterType="Integer" resultMap="ServiceMResult">
+        <include refid="selectServiceMVo"/>
+        where id = #{id}
+    </select>
+        
+    <!--<insert id="insertServiceM" parameterType="ServiceM">-->
+        <!--insert into proc_service_m-->
+		<!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+			<!--<if test="id != null  ">id,</if>-->
+			<!--<if test="serviceKey != null  and serviceKey != ''  ">service_key,</if>-->
+			<!--<if test="serviceName != null  and serviceName != ''  ">service_name,</if>-->
+			<!--<if test="serviceType != null  and serviceType != ''  ">service_type,</if>-->
+			<!--<if test="serviceComment != null  and serviceComment != ''  ">service_comment,</if>-->
+			<!--<if test="isValid != null  and isValid != ''  ">is_valid,</if>-->
+			<!--<if test="col1 != null  and col1 != ''  ">col1,</if>-->
+			<!--<if test="col2 != null  and col2 != ''  ">col2,</if>-->
+			<!--<if test="col3 != null  and col3 != ''  ">col3,</if>-->
+         <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+			<!--<if test="id != null  ">#{id},</if>-->
+			<!--<if test="serviceKey != null  and serviceKey != ''  ">#{serviceKey},</if>-->
+			<!--<if test="serviceName != null  and serviceName != ''  ">#{serviceName},</if>-->
+			<!--<if test="serviceType != null  and serviceType != ''  ">#{serviceType},</if>-->
+			<!--<if test="serviceComment != null  and serviceComment != ''  ">#{serviceComment},</if>-->
+			<!--<if test="isValid != null  and isValid != ''  ">#{isValid},</if>-->
+			<!--<if test="col1 != null  and col1 != ''  ">#{col1},</if>-->
+			<!--<if test="col2 != null  and col2 != ''  ">#{col2},</if>-->
+			<!--<if test="col3 != null  and col3 != ''  ">#{col3},</if>-->
+         <!--</trim>-->
+    <!--</insert>-->
+	 
+    <update id="updateServiceM" parameterType="ServiceM">
+        update proc_service_m
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serviceKey != null  and serviceKey != ''  ">service_key = #{serviceKey},</if>
+            <if test="serviceName != null  and serviceName != ''  ">service_name = #{serviceName},</if>
+            <if test="serviceType != null  and serviceType != ''  ">service_type = #{serviceType},</if>
+            <if test="serviceComment != null  and serviceComment != ''  ">service_comment = #{serviceComment},</if>
+            <if test="isValid != null  and isValid != ''  ">is_valid = #{isValid},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<!--<delete id="deleteServiceMById" parameterType="Integer">-->
+        <!--delete from proc_service_m where id = #{id}-->
+    <!--</delete>-->
+	<!---->
+    <!--<delete id="deleteServiceMByIds" parameterType="String">-->
+        <!--delete from proc_service_m where id in -->
+        <!--<foreach item="id" collection="array" open="(" separator="," close=")">-->
+            <!--#{id}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+    
+</mapper>

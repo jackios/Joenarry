@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-dnsinfo-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">dns地址：</label>
+				<div class="col-sm-8">
+					<input id="dns" name="dns" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">描述信息：</label>
+				<div class="col-sm-8">
+					<input id="comment" name="comment" class="form-control" type="text">
+				</div>
+			</div>
+			<!--<div class="form-group">	-->
+				<!--<label class="col-sm-3 control-label">附加列1：</label>-->
+				<!--<div class="col-sm-8">-->
+					<!--<input id="col1" name="col1" class="form-control"  type="text">-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="form-group">	-->
+				<!--<label class="col-sm-3 control-label">附加列2：</label>-->
+				<!--<div class="col-sm-8">-->
+					<!--<input id="col2" name="col2" class="form-control" type="text">-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="form-group">	-->
+				<!--<label class="col-sm-3 control-label">附加列3：</label>-->
+				<!--<div class="col-sm-8">-->
+					<!--<input id="col3" name="col3" class="form-control" type="text">-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "module/dnsinfo"
+		$("#form-dnsinfo-add").validate({
+            rules:{
+                dns:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkIpAddress",
+                        type:'post',
+                        dataType: "json",
+                        data: {
+                            "dns": function() {
+                                return $.common.trim($("#dns").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                }
+            },
+            messages: {
+                "dns": {
+                    required: "DNS地址必填",
+                    remote: "DNS地址必须符合点分十进制表示法"
+                },
+            },
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/add", $('#form-dnsinfo-add').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

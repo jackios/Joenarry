@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.fileTransfer.mapper.FileTransferMapper">
+    
+    <resultMap type="FileTransfer" id="FileTransferResult">
+        <result property="id"    column="id"    />
+        <result property="dir"    column="dir"    />
+        <result property="name"    column="name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="size"    column="size"    />
+        <result property="note"    column="note"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectFileTransferVo">
+        select id, dir, name, create_time, size, note, col1, col2, col3 from sys_file_transfer
+    </sql>
+	
+    <select id="selectFileTransferList" parameterType="FileTransfer" resultMap="FileTransferResult">
+        <include refid="selectFileTransferVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="dir != null  and dir != '' "> and dir = #{dir}</if>
+             <if test="name != null  and name != '' "> and name REGEXP #{name}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="size != null  and size != '' "> and size = #{size}</if>
+             <if test="note != null  and note != '' "> and note = #{note}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectFileTransferById" parameterType="Long" resultMap="FileTransferResult">
+        <include refid="selectFileTransferVo"/>
+        where id = #{id}
+    </select>
+        
+	<select id="selectFileTransferByYear" resultType="int">
+        select count(1) as count from sys_file_transfer
+        <where>  
+        	<if test="year != null "> year(create_time) = #{year}</if>
+        	<if test="month != null "> and month(create_time) = #{month}</if>
+        	<if test="day != null "> and day(create_time) = #{day}</if>
+        	<if test="hour != null "> and hour(create_time) = #{hour}</if>
+        	<if test="dir != null "> and dir REGEXP #{dir}</if> 
+        </where>  
+    </select>
+    
+    <insert id="insertFileTransfer" parameterType="FileTransfer">
+        insert into sys_file_transfer
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="dir != null  and dir != ''  ">dir,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="size != null  and size != ''  ">size,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="dir != null  and dir != ''  ">#{dir},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="size != null  and size != ''  ">#{size},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateFileTransfer" parameterType="FileTransfer">
+        update sys_file_transfer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dir != null  and dir != ''  ">dir = #{dir},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="size != null  and size != ''  ">size = #{size},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteFileTransferById" parameterType="Long">
+        delete from sys_file_transfer where id = #{id}
+    </delete>
+	
+    <delete id="deleteFileTransferByIds" parameterType="String">
+        delete from sys_file_transfer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

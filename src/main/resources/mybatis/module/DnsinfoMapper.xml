@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.dnsinfo.mapper.DnsinfoMapper">
+    
+    <resultMap type="Dnsinfo" id="DnsinfoResult">
+        <result property="id"    column="id"    />
+        <result property="dns"    column="dns"    />
+        <result property="comment"    column="comment"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectDnsinfoVo">
+        select id, dns, comment, col1, col2, col3 from proc_dnsinfo
+    </sql>
+	
+    <select id="selectDnsinfoList" parameterType="Dnsinfo" resultMap="DnsinfoResult">
+        <include refid="selectDnsinfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="dns != null  and dns != '' "> and dns = #{dns}</if>
+             <if test="comment != null  and comment != '' "> and comment = #{comment}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectDnsinfoById" parameterType="Integer" resultMap="DnsinfoResult">
+        <include refid="selectDnsinfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDnsinfo" parameterType="Dnsinfo">
+        insert into proc_dnsinfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="dns != null  and dns != ''  ">dns,</if>
+			<if test="comment != null  and comment != ''  ">comment,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="dns != null  and dns != ''  ">#{dns},</if>
+			<if test="comment != null  and comment != ''  ">#{comment},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+
+	<delete id="deleteDnsinfoById" parameterType="Integer">
+        delete from proc_dnsinfo where id = #{id}
+    </delete>
+	
+    <delete id="deleteDnsinfoByIds" parameterType="String">
+        delete from proc_dnsinfo where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

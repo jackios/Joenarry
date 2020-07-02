@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-endpoint-edit" th:object="${endpoint}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">端点名称：</label>
+                <div class="col-sm-8">
+                    <input id="name" name="name" th:field="*{name}" class="form-control" th:readonly="*{type} == 'E' ? false : true" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">端点描述：</label>
+                <div class="col-sm-8">
+                    <input id="description" name="description" th:field="*{description}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group" th:hidden="true">
+                <label class="col-sm-3 control-label">端点类型：</label>
+                <div class="col-sm-8">
+                    <label class="radio-box"> <input type="radio" th:field="*{type}" name="type" value="E"/> 本地端点 </label>
+                    <label class="radio-box"> <input type="radio" th:field="*{type}" name="type" value="N"/> NFS端点 </label>
+                    <label class="radio-box"> <input type="radio" th:field="*{type}" name="type" value="F"/> FTP端点 </label>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">用户名：</label>
+                <div class="col-sm-8">
+                    <input id="username" name="username" th:readonly="true" th:field="*{username}"  class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">密码：</label>
+                <div class="col-sm-8">
+                    <input id="password" name="password" th:field="*{password}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">授权主机：</label>
+                <div class="col-sm-8">
+                    <input id="allows" name="allows"  th:field="*{allows}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">参数：</label>
+                <div class="col-sm-8">
+                    <input id="perms" name="perms"  th:field="*{perms}" class="form-control" type="text">
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "module/endpoint";
+
+        jQuery.validator.addMethod("checkSpace", function(value, element) {
+            var ret = /^[a-zA-Z0-9_]+$/;
+            return this.optional(element) || (ret.test($.common.trim(value)));
+        }, "请正确填写端点名称，只能包含字母数字下划线");
+
+		$("#form-endpoint-edit").validate({
+			rules:{
+                type:{
+                    required:true,
+                },
+                name:{
+                    required:true,
+                    checkSpace: true,
+                    // remote: {
+                    //     url: prefix + "/checkEndpointNameUnique",
+                    //     type: "post",
+                    //     dataType: "json",
+                    //     data: {
+                    //         "parentId": function() {
+                    //             return $("input[name='parentId']").val();
+                    //         },
+                    //         "name" : function() {
+                    //             return $.common.trim($("#name").val());
+                    //         }
+                    //     },
+                    //     dataFilter: function(data, type) {
+                    //         return $.validate.unique(data);
+                    //     }
+                    // }
+                },
+                // username: {
+                //     required:true,
+                //     remote: {
+                //         url: prefix + "/checkUserNameUnique",
+                //         type: "post",
+                //         dataType: "json",
+                //         data: {
+                //             "username" : function() {
+                //                 return $.common.trim($("#username").val());
+                //             }
+                //         },
+                //         dataFilter: function(data, type) {
+                //             return $.validate.unique(data);
+                //         }
+                //     }
+                // },
+                // password: {
+                //     required:true,
+                // },
+                // username: {
+                //     required:true,
+                // },
+                // perms: {
+                //     required:true,
+                // },
+                allows: {
+         			required:true,
+                    remote: {
+                        url: prefix + "/checkAllowIp",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            name: function () {
+                                return $.common.trim($("#allows").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+        		},
+            },
+            messages: {
+                "name": {
+                    //remote: "端点已经存在"
+                    required: "端点名称不能为空"
+                },
+                "allows": {
+                    remote: "主机地址不可有多个*，请重设地址"
+                }
+
+            },
+			submitHandler: function(form) {
+                var name = $.common.trim($("#name").val());
+                if (name.indexOf(" ") != -1) {
+
+                }
+				$.operate.save(prefix + "/edit", $('#form-endpoint-edit').serialize());
+			}
+		});
+
+        $(function() {
+            endpointVisible('[[${endpoint.type}]]');
+            $('input').on('ifChecked',
+                function(event) {
+                    var endpointType = $(event.target).val();
+                    endpointVisible(endpointType);
+                });
+        });
+
+        function endpointVisible(endpointType) {
+            $("#password").parents(".form-group").hide();
+            $("#username").parents(".form-group").hide();
+            $("#perms").parents(".form-group").hide();
+            $("#allows").parents(".form-group").hide();
+            if (endpointType == "E") {
+                // nothing todo..
+            } else if (endpointType == "N") {
+                $("#perms").parents(".form-group").show();
+                $("#allows").parents(".form-group").show();
+            } else if (endpointType == "F") {
+                $("#password").parents(".form-group").show();
+                $("#username").parents(".form-group").show();
+            }
+        }
+	</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-netdevinfo-edit" th:object="${netdevinfo}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">设备名称：</label>
+                <div class="col-sm-8">
+                    <input id="devName" name="devName" th:field="*{devName}" readonly class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">ip地址：</label>
+                <div class="col-sm-8">
+                    <input id="ipaddr" name="ipaddr" th:field="*{ipaddr}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">子网掩码：</label>
+                <div class="col-sm-8">
+                    <input id="netmask" name="netmask" th:field="*{netmask}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">网关：</label>
+                <div class="col-sm-8">
+                    <input id="gateway" name="gateway" th:field="*{gateway}" class="form-control" type="text">
+                </div>
+            </div>
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">开机自启动：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="onboot" name="onboot" th:field="*{onboot}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">开机自启动：</label>
+                <div class="col-sm-8">
+                    <div class="onoffswitch">
+                        <input type="checkbox" th:checked="*{onboot == 'yes' ? true : false}" class="onoffswitch-checkbox" id="onboot" name="onboot">
+                        <label class="onoffswitch-label" for="onboot">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">链路状态：</label>
+                <div class="col-sm-8">
+                    <input id="linkStatus" name="linkStatus" th:field="*{linkStatus}" readonly class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">MAC地址：</label>
+                <div class="col-sm-8">
+                    <input id="mac" name="mac" th:field="*{mac}" readonly class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">说明：</label>
+                <div class="col-sm-8">
+                    <input id="comment" name="comment" th:field="*{comment}" readonly class="form-control" type="text">
+                </div>
+            </div>
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">附加列1：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="col1" name="col1" th:field="*{col1}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">附加列2：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="col2" name="col2" th:field="*{col2}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">附加列3：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="col3" name="col3" th:field="*{col3}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "module/netdevinfo"
+
+        $("#form-netdevinfo-edit").validate({
+            rules:{
+                ipaddr:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkIpAddress",
+                        type:'post',
+                        dataType: "json",
+                        data: {
+                            "ip": function() {
+                                return $.common.trim($("#ipaddr").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+                netmask:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkNetmask",
+                        type:'post',
+                        dataType: "json",
+                        data: {
+                            "ip": function() {
+                                return $.common.trim($("#netmask").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+                gateway:{
+                    required:false,
+                    remote: {
+                        url: prefix + "/checkGatewayAddress",
+                        type:'post',
+                        dataType: "json",
+                        data: {
+                            "ip": function() {
+                                return $.common.trim($("#gateway").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+            },
+            messages: {
+                "ipaddr": {
+                    required: "IP地址必填",
+                    remote: "IP地址必须符合点分十进制表示法"
+                },
+                "netmask":{
+                    required: "子网掩码地址必填",
+                    remote: "子网掩码必须符合点分十进制表示法 或 指定有效掩码位数"
+                },
+                "gateway" : {
+                    remote: "网关必须符合点分十进制表示法 或 为空"
+                },
+            },
+            submitHandler:function(form){
+                edit();
+            }
+        });
+
+        function edit() {
+            var ipaddr = $("input[name='ipaddr']").val();
+            var devName = $("input[name='devName']").val();
+            var netmask = $("input[name='netmask']").val();
+            var gateway = $("input[name='gateway']").val();
+            var id = $("input[name='id']").val();
+            var onboot = $("input[name='onboot']").is(':checked') == true ? 'yes' : 'no';
+
+			  $.modal.confirm("修改网络配置将重启服务器， 确定修改吗？", function() {
+				$.modal.alertWarning("服务器重启可能将持续数分钟，请稍后刷新页面尝试再次连接。");
+				$.ajax({
+	                cache : true,
+	                type : "POST",
+	                url : prefix + "/edit",
+	                data : {
+	                    "devName" : devName,
+	                    "ipaddr": ipaddr,
+	                    "netmask": netmask,
+	                    "gateway": gateway,
+	                    "id": id,
+	                    "onboot": onboot
+	                },
+	                async : false,
+	                error : function(request) {
+	                    $.modal.alertError("系统错误");
+	                },
+	                success : function(data) {
+	                    $.operate.saveSuccess(data);
+	                }
+	            });
+        	});
+        }
+
+		// $("#form-netdevinfo-edit").validate({
+		// 	rules:{
+		// 		xxxx:{
+		// 			required:true,
+		// 		},
+		// 	},
+		// 	submitHandler: function(form) {
+		// 		$.operate.save(prefix + "/edit", $('#form-netdevinfo-edit').serialize());
+		// 	}
+		// });
+	</script>
+</body>
+</html>

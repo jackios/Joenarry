@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="module:wdiodeumtConfig:view">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script th:inline="javascript">
+
+        var removeFlag = [[${@permission.hasPermi('module:wdiodeumtConfig:view')}]];
+        var editFlag = [[${@permission.hasPermi('module:wdiodeumtConfig:view')}]];
+
+        var prefix = ctx + "module/wdiodeumtConfig";
+        function reversion(id) {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/reversion",
+                data : {
+                    "id" : id
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.saveSuccess(data);
+                }
+            });
+		}
+
+        function downloadConfig(id) {
+            $.modal.loading("正在导出数据，请稍后...");
+            $.post(prefix + "/export/" + id, "", function(result) {
+                if (result.code == web_status.SUCCESS) {
+                    window.location.href = ctx + "common/download?fileName=" + result.msg + "&delete=" + true;
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            });
+        }
+
+        $(function() {
+            var options = {
+                url: prefix + "/versionList",
+                createUrl: prefix + "/add",
+				viewVersionUrl: prefix + "/viewVersionInfo/{id}",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "wdiodeumt配置",
+                search: false,
+                showColumns: false,
+                pagination:false,
+                showExport: false,
+                columns: [
+                    {
+                    checkbox: true
+                },
+                    {
+                        field : 'id',
+                        title : '主键',
+						visible: false
+                    },
+                    {
+                        field : 'contents',
+                        title : '配置文件内容',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-info btn-xs" href="#" onclick="$.operate.viewVersionInfo(\'' + row.id + '\')"><i class="fa fa-eye"></i>点击查看</a> ');
+                            return actions.join('');
+                        }
+                    },
+                    {
+                        field : 'dataTime',
+                        title : '保存日期'
+                    },
+                    {
+                        field : 'description',
+                        title : '描述信息'
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+						width: 170,
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs" href="#" onclick="downloadConfig(\'' + row.id + '\')"><i class="fa fa-download"></i>下载</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                            actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="reversion(\'' + row.id + '\')"><i class="fa fa-arrow-circle-o-left"></i>回退</a>');
+                            return actions.join('');
+                        }
+                    }]
+            };
+            $.table.init(options);
+        });
+	</script>
+
+</body>
+</html>

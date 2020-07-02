@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<title>XSD配置文件上传</title>
+<div th:include="include::header"></div>
+<link th:href="@{/ajax/libs/cropbox/cropbox.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/bootstrap-fileinput/css/fileinput.min.css}" rel="stylesheet"/>
+<style>
+	.kv-preview-thumb {
+		width: 97%;
+	}
+
+	.kv-file-content {
+		width: 100%;
+		height: 100%;
+	}
+</style>
+<body class="white-bg">
+<form id="form" action="upload" method="post" enctype="multipart/form-data">
+	<div class="row">
+		<div class="col-sm-offset-1 col-sm-10">
+			<div class="file-loading">
+                <input id="file_select" name="file" type="file" multiple>
+                    </div>
+                    </div>
+                    </div>
+                    </form>
+                    <div id="errorBlock" class="help-block"></div>
+
+                        <div th:include="include::footer"></div>
+                        <script th:src="@{/ajax/libs/bootstrap-fileinput/js/fileinput.min.js}"></script>
+<script th:src="@{/ajax/libs/bootstrap-fileinput/js/locales/zh.js}"></script>
+<script th:inline="javascript">
+    var flag= [[${flag}]];
+    console.info(flag);
+    if ($.common.isEmpty(flag)) {
+        $.modal.alertError("上传XSD配置环境初始化错误");
+    } else {
+        var prefix = ctx + "module/proxy/" + flag;
+        $(window).load(function () {
+            var $file_select = $('#file_select'), initPlugin = function () {
+                $file_select.fileinput({
+                    previewClass: '',
+                    uploadAsync: false,
+                    multiple: false,
+                    language: "zh",
+                    uploadUrl: prefix + "/upload",
+                    allowedFileExtensions: ["xsd","json","xml","schema"],
+                    maxFileSize: 1024,
+                    browseClass: "btn btn-primary btn-block",
+                    removeClass: "btn btn-primary btn-block",
+                    uploadClass: "btn btn-primary btn-block",
+                    showCaption: false,
+                    maxFileCount: 1,
+                    elErrorContainer: "#errorBlock",
+                    theme: 'explorer-fa',
+                    reversePreviewOrder: true,
+                    previewSettings: {
+                        text: {width: "570px", height: "160px"}
+                    },
+                    autoReplace: true,
+                    showRemove: false,
+                    enctype: 'multipart/form-data',
+                    dropZoneTitle: "拖拽配置文件到这里..."
+                }).on("fileuploaded", function (event, data) {
+                    if (data.response) {
+                        alert('处理成功');
+                    } else {
+                        alert('处理失败');
+                    }
+                });
+            };
+
+            // initialize plugin
+            initPlugin();
+
+            $('#file_select').on('filebatchuploaderror', function (event, data, previewId, index) {
+                $.modal.alertError("上传配置失败, 请重试……");
+            });
+
+            $('#file_select').on('filebatchuploadsuccess', function (event, data, previewId, index) {
+                var response = data.response;
+                if (response.code == 0) {
+                    //$.modal.alertSuccess(response.msg);
+                    $.operate.saveSuccess(response);
+                } else {
+                    $.modal.alertError(response.msg);
+                }
+            });
+
+            /**
+             * 文件上传后调用
+             * */
+            // $("#file_select").on("fileuploaded", function (event, data, previewId, index) {
+            //     $('#file_select').fileinput('disable');
+            //     console.info("post");
+            //     console.info(event);
+            //     console.info(data);
+            //     console.info(previewId);
+            //     console.info(index);
+            // });
+            //
+            // $('#file_select').on('filepreupload', function(event, data, previewId, index) {
+            //     console.info("pre");
+            //     console.info(event);
+            //     console.info(data);
+            //     console.info(previewId);
+            //     console.info(index);
+            // });
+
+            //console.info($('#file_select'));
+        });
+    }
+
+</script>
+</body>
+</html>

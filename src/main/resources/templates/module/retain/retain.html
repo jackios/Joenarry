@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="module:retain:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-primary btn-rounded" onclick="downloadF()" shiro:hasPermission="module:table:add">
+				<i class="fa fa-download"></i> 下载文件
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('module:retain:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('module:retain:remove')}]];
+        var prefix = ctx + "module/retain"
+
+        function downloadF() {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/DF",
+                data : {
+                },
+                async : false,
+                error : function(data) {
+                    $.modal.alertError("链接出现错误。");
+                },
+                success : function(data) {
+                    if (data.code == 0) {
+                    	var fileContent = window.atob(data.data);
+                    	saveFile(data.nm, fileContent);
+                        
+                    } else {
+                        $.modal.alertError(data.msg);
+                    }
+                }
+            });
+        }
+        
+        function saveFile(fileName, fileContent) {
+            var byteArr = new Array(fileContent.length);
+            for (var i = 0; i < fileContent.length; i++) {
+                byteArr[i] = fileContent.charCodeAt(i);
+            }
+            var blob = new Blob([new Uint8Array(byteArr)], { type: "application/octet-stream" });
+            var url = window.URL.createObjectURL(blob);
+
+            var a = document.createElement("a");
+            if ("download" in a) { // 支持download属性
+                document.body.appendChild(a);
+                a.style = "display:none";
+                a.href = url;
+                //download属性IE不支持。。。
+                a.download = fileName;
+                a.click(); // 触发下载
+                //revokeObjectURL会导致firefox不能下载。。。
+                //window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+            else { //IE 10+
+                if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+                    return navigator.msSaveOrOpenBlob(blob, name);
+                }
+            }
+    	}
+        
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                search: false,
+                showColumns: false,
+                pagination:false,
+                showExport: false,
+                modalName: "单向配置",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '主键' ,
+                    visible: false
+				},
+				{
+					field : 'ip', 
+					title : 'IP地址' 
+				},
+				{
+					field : 'mac', 
+					title : 'MAC地址' 
+				},
+				{
+					field : 'description', 
+					title : '描述信息' 
+				},
+				{
+					field : 'col1', 
+					title : '附加列1' ,
+                    visible: false
+				},
+				{
+					field : 'col2', 
+					title : '附加列2' ,
+                    visible: false
+				},
+				{
+					field : 'col3', 
+					title : '附加列3' ,
+                    visible: false
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

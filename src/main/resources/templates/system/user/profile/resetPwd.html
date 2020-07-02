@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-user-resetPwd">
+			<input name="userId"  type="hidden"  th:value="${user.userId}" />
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">登录名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" readonly="true" name="loginName" th:value="${user.loginName}"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">旧密码：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="password" name="oldPassword" id="oldPassword">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">新密码：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="password" name="password" id="password">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">再次确认：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="password" name="confirm" id="confirm">
+					<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 请再次输入您的密码</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script src="../static/cs2c/cjwdjm.js" th:src="@{/cs2c/cjwdjm.js}"></script>
+	<script>
+		$("#form-user-resetPwd").validate({
+			rules:{
+				oldPassword:{
+					required:true,
+					remote: {
+	                    url: ctx + "system/user/profile/checkPassword",
+	                    type: "get",
+	                    dataType: "json",
+	                    data: {
+	                        password: function() {
+	                        	var encrypt = new JSEncrypt();
+	                        	var password = $("input[name='oldPassword']").val();
+	                        	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnBUXlQTb8UIQLeXhjj+IpsXZJsJ8SdChFuurrnq4R6UxY9UFhgBBpNivFmmtb1yVkYMRbCGF10mDH69jcujGLWUixA6QRqc0CczdnC7BI3gQOv7LLgl8PaeKyeMnCK+9zQckwvuywUOcJ2C8/LwGoyNZ4wrVbEnwDeapFT9M+xAqGBVfW/g93DRyrWZ6n/umPS97z6QXLn6Yyn2fyjBdwW2M8cFw5GhMdgyObPfywJLV4VbgIV2EyLJJHz/vn4EtFs6BN9gAXlcJnaLhobSJw6E+WqRdWiQMcHatgVCDzeMXR/+k6Mwy8Pc7VaOxXbrusB+YNbV6V1OgFBOV7rT89wIDAQAB");
+                			    var data = encrypt.encrypt(password);
+                                return encodeURI(data).replace(/%/g, '%25').replace(/\+/g, '%2B').replace(/=/g, '%3D');
+	                        }
+	                    }
+	                }
+				},
+				password: {
+	                required: true,
+	                minlength: 5,
+	    			maxlength: 20
+	            },
+	            confirm: {
+	                required: true,
+	                equalTo: "#password"
+	            }
+			},
+			messages: {
+	            oldPassword: {
+	                required: "请输入原密码",
+	                remote: "原密码错误"
+	            },
+	            password: {
+	                required: "请输入新密码",
+	                minlength: "密码不能小于6个字符",
+	                maxlength: "密码不能大于20个字符"
+	            },
+	            confirm: {
+	                required: "请再次输入新密码",
+	                equalTo: "两次密码输入不一致"
+	            }
+
+	        },
+			submitHandler:function(form){
+            	var encrypt = new JSEncrypt();
+            	encrypt.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnBUXlQTb8UIQLeXhjj+IpsXZJsJ8SdChFuurrnq4R6UxY9UFhgBBpNivFmmtb1yVkYMRbCGF10mDH69jcujGLWUixA6QRqc0CczdnC7BI3gQOv7LLgl8PaeKyeMnCK+9zQckwvuywUOcJ2C8/LwGoyNZ4wrVbEnwDeapFT9M+xAqGBVfW/g93DRyrWZ6n/umPS97z6QXLn6Yyn2fyjBdwW2M8cFw5GhMdgyObPfywJLV4VbgIV2EyLJJHz/vn4EtFs6BN9gAXlcJnaLhobSJw6E+WqRdWiQMcHatgVCDzeMXR/+k6Mwy8Pc7VaOxXbrusB+YNbV6V1OgFBOV7rT89wIDAQAB");
+				
+            	var oldPassword = $('#oldPassword').val();
+				var password = $('#password').val();
+				var confirm = $('#confirm').val();
+                
+			    var data = encrypt.encrypt(oldPassword);
+			    $('#oldPassword').val(encodeURI(data).replace(/%/g, '%25').replace(/\+/g, '%2B').replace(/=/g, '%3D'));
+			    var data = encrypt.encrypt(password);
+			    $('#password').val(encodeURI(data).replace(/%/g, '%25').replace(/\+/g, '%2B').replace(/=/g, '%3D'));
+			    var data = encrypt.encrypt(confirm);
+			    $('#confirm').val(encodeURI(data).replace(/%/g, '%25').replace(/\+/g, '%2B').replace(/=/g, '%3D'));
+
+				$.operate.save(ctx + "system/user/profile/resetPwd", $('#form-user-resetPwd').serialize());
+
+			}
+		});
+	</script>
+</body>
+
+</html>

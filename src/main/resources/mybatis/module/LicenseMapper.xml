@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.license.mapper.LicenseMapper">
+    
+    <resultMap type="License" id="LicenseResult">
+        <result property="id"    column="id"    />
+        <result property="content"    column="content"    />
+        <result property="hostid"    column="hostid"    />
+        <result property="registerCmd"    column="register_cmd"    />
+        <result property="verifyCmd"    column="verify_cmd"    />
+        <result property="hostidCmd"    column="hostid_cmd"    />
+        <result property="dataTime"    column="data_time"    />
+        <result property="type"    column="type"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectLicenseVo">
+        select id, content, hostid, register_cmd, verify_cmd, hostid_cmd, data_time, type, col1, col2, col3 from proc_license
+    </sql>
+	
+    <select id="selectLicenseList" parameterType="License" resultMap="LicenseResult">
+        <include refid="selectLicenseVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="content != null  and content != '' "> and content = #{content}</if>
+             <if test="hostid != null  and hostid != '' "> and hostid = #{hostid}</if>
+             <if test="registerCmd != null  and registerCmd != '' "> and register_cmd = #{registerCmd}</if>
+             <if test="verifyCmd != null  and verifyCmd != '' "> and verify_cmd = #{verifyCmd}</if>
+             <if test="hostidCmd != null  and hostidCmd != '' "> and hostid_cmd = #{hostidCmd}</if>
+             <if test="dataTime != null "> and data_time = #{dataTime}</if>
+             <if test="type != null  and type != '' "> and type = #{type}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <!--<select id="selectLicenseById" parameterType="Integer" resultMap="LicenseResult">-->
+        <!--<include refid="selectLicenseVo"/>-->
+        <!--where id = #{id}-->
+    <!--</select>-->
+        <!---->
+    <!--<insert id="insertLicense" parameterType="License">-->
+        <!--insert into proc_license-->
+		<!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+			<!--<if test="id != null  ">id,</if>-->
+			<!--<if test="content != null  and content != ''  ">content,</if>-->
+			<!--<if test="hostid != null  and hostid != ''  ">hostid,</if>-->
+			<!--<if test="registerCmd != null  and registerCmd != ''  ">register_cmd,</if>-->
+			<!--<if test="verifyCmd != null  and verifyCmd != ''  ">verify_cmd,</if>-->
+			<!--<if test="hostidCmd != null  and hostidCmd != ''  ">hostid_cmd,</if>-->
+			<!--<if test="dataTime != null  ">data_time,</if>-->
+			<!--<if test="type != null  and type != ''  ">type,</if>-->
+			<!--<if test="col1 != null  and col1 != ''  ">col1,</if>-->
+			<!--<if test="col2 != null  and col2 != ''  ">col2,</if>-->
+			<!--<if test="col3 != null  and col3 != ''  ">col3,</if>-->
+         <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+			<!--<if test="id != null  ">#{id},</if>-->
+			<!--<if test="content != null  and content != ''  ">#{content},</if>-->
+			<!--<if test="hostid != null  and hostid != ''  ">#{hostid},</if>-->
+			<!--<if test="registerCmd != null  and registerCmd != ''  ">#{registerCmd},</if>-->
+			<!--<if test="verifyCmd != null  and verifyCmd != ''  ">#{verifyCmd},</if>-->
+			<!--<if test="hostidCmd != null  and hostidCmd != ''  ">#{hostidCmd},</if>-->
+			<!--<if test="dataTime != null  ">#{dataTime},</if>-->
+			<!--<if test="type != null  and type != ''  ">#{type},</if>-->
+			<!--<if test="col1 != null  and col1 != ''  ">#{col1},</if>-->
+			<!--<if test="col2 != null  and col2 != ''  ">#{col2},</if>-->
+			<!--<if test="col3 != null  and col3 != ''  ">#{col3},</if>-->
+         <!--</trim>-->
+    <!--</insert>-->
+	 
+    <update id="updateLicense" parameterType="License">
+        update proc_license
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="hostid != null  and hostid != ''  ">hostid = #{hostid},</if>
+            <if test="registerCmd != null  and registerCmd != ''  ">register_cmd = #{registerCmd},</if>
+            <if test="verifyCmd != null  and verifyCmd != ''  ">verify_cmd = #{verifyCmd},</if>
+            <if test="hostidCmd != null  and hostidCmd != ''  ">hostid_cmd = #{hostidCmd},</if>
+            <if test="dataTime != null  ">data_time = #{dataTime},</if>
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<!--<delete id="deleteLicenseById" parameterType="Integer">-->
+        <!--delete from proc_license where id = #{id}-->
+    <!--</delete>-->
+	<!---->
+    <!--<delete id="deleteLicenseByIds" parameterType="String">-->
+        <!--delete from proc_license where id in -->
+        <!--<foreach item="id" collection="array" open="(" separator="," close=")">-->
+            <!--#{id}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+    
+</mapper>

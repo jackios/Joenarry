@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.keyword.mapper.KeywordMapper">
+    
+    <resultMap type="Keyword" id="KeywordResult">
+        <result property="id"    column="id"    />
+        <result property="keyword"    column="keyword"    />
+        <result property="description"    column="description"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectKeywordVo">
+        select id, keyword, description, col1, col2, col3 from proc_keyword
+    </sql>
+	
+    <select id="selectKeywordList" parameterType="Keyword" resultMap="KeywordResult">
+        <include refid="selectKeywordVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="keyword != null  and keyword != '' "> and keyword = #{keyword}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectKeywordById" parameterType="Integer" resultMap="KeywordResult">
+        <include refid="selectKeywordVo"/>
+        where id = #{id}
+    </select>
+
+    <!--<select id="selectKeywordByKeyword" parameterType="String" resultMap="KeywordResult">-->
+        <!--<include refid="selectKeywordVo"/>-->
+        <!--where keyword = #{keyword}-->
+    <!--</select>-->
+        
+    <insert id="insertKeyword" parameterType="Keyword">
+        insert into proc_keyword
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="keyword != null  and keyword != ''  ">keyword,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="keyword != null  and keyword != ''  ">#{keyword},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <!--<update id="updateKeyword" parameterType="Keyword">-->
+        <!--update proc_keyword-->
+        <!--<trim prefix="SET" suffixOverrides=",">-->
+            <!--<if test="keyword != null  and keyword != ''  ">keyword = #{keyword},</if>-->
+            <!--<if test="description != null  and description != ''  ">description = #{description},</if>-->
+            <!--<if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>-->
+            <!--<if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>-->
+            <!--<if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>-->
+        <!--</trim>-->
+        <!--where id = #{id}-->
+    <!--</update>-->
+
+	<!--<delete id="deleteKeywordById" parameterType="Integer">-->
+        <!--delete from proc_keyword where id = #{id}-->
+    <!--</delete>-->
+	
+    <delete id="deleteKeywordByIds" parameterType="String">
+        delete from proc_keyword where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

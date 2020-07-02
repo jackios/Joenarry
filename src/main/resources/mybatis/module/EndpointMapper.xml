@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.endpoint.mapper.EndpointMapper">
+    
+    <resultMap type="Endpoint" id="EndpointResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="type"    column="type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="username"    column="username"    />
+        <result property="password"    column="password"    />
+        <result property="allows"    column="allows"    />
+        <result property="perms"    column="perms"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectEndpointVo">
+        select id, name, description, parent_id, type, create_by, create_time, update_by, update_time, username, password, allows, perms, col1, col2, col3 from proc_endpoint
+    </sql>
+
+    <select id="selectEndpointList" parameterType="Endpoint" resultMap="EndpointResult">
+        <include refid="selectEndpointVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="name != null  and name != '' "> and name = #{name}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="parentId != null "> and parent_id = #{parentId}</if>
+             <if test="type != null  and type != '' "> and type = #{type}</if>
+             <if test="createBy != null  and createBy != '' "> and create_by = #{createBy}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateBy != null  and updateBy != '' "> and update_by = #{updateBy}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="username != null  and username != '' "> and username = #{username}</if>
+             <if test="password != null  and password != '' "> and password = #{password}</if>
+             <if test="allows != null  and allows != '' "> and allows = #{allows}</if>
+             <if test="perms != null  and perms != '' "> and perms = #{perms}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectEndpointById" parameterType="Integer" resultMap="EndpointResult">
+        <include refid="selectEndpointVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEndpoint" parameterType="Endpoint">
+        insert into proc_endpoint
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="parentId != null  ">parent_id,</if>
+			<if test="type != null  and type != ''  ">type,</if>
+			<if test="createBy != null  and createBy != ''  ">create_by,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''  ">update_by,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="username != null  and username != ''  ">username,</if>
+			<if test="password != null  and password != ''  ">password,</if>
+			<if test="allows != null  and allows != ''  ">allows,</if>
+			<if test="perms != null  and perms != ''  ">perms,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="parentId != null  ">#{parentId},</if>
+			<if test="type != null  and type != ''  ">#{type},</if>
+			<if test="createBy != null  and createBy != ''  ">#{createBy},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''  ">#{updateBy},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="username != null  and username != ''  ">#{username},</if>
+			<if test="password != null  and password != ''  ">#{password},</if>
+			<if test="allows != null  and allows != ''  ">#{allows},</if>
+			<if test="perms != null  and perms != ''  ">#{perms},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateEndpoint" parameterType="Endpoint">
+        update proc_endpoint
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="parentId != null  ">parent_id = #{parentId},</if>
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="username != null  and username != ''  ">username = #{username},</if>
+            <if test="password != null  and password != ''  ">password = #{password},</if>
+            <if test="allows != null  and allows != ''  ">allows = #{allows},</if>
+            <if test="perms != null  and perms != ''  ">perms = #{perms},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteEndpointById" parameterType="Integer">
+        delete from proc_endpoint where id = #{id}
+    </delete>
+	
+    <delete id="deleteEndpointByIds" parameterType="String">
+        delete from proc_endpoint where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectCountEndpointByParentId" resultType="Integer">
+	    select count(1) from proc_endpoint where parent_id=#{parentId}
+	</select>
+
+    <select id="checkEndpointNameUnique" parameterType="Endpoint" resultMap="EndpointResult">
+        <include refid="selectEndpointVo"/>
+        where name=#{name} and parent_id = #{parentId}
+    </select>
+    
+</mapper>

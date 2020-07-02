@@ -1,0 +1,613 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-wdiodeumtService-add" th:object="${wdiodeumtService}">
+        <input id="id" name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">服务名：</label>
+            <div class="col-sm-7">
+                <input id="serviceName" name="serviceName" class="form-control" type="text" required
+                       onchange="serviceNameChange(this)" th:field="*{serviceName}" disabled
+                       placeholder="注册端口标识，唯一">
+            </div>
+            <div class="col-sm-1">
+                <!--  <input type="hidden" id="isServiceNameOk" value="yes"/>
+                  <li style="width:10px;height:10px;border-radius: 50%;"
+                      id="isServiceNameOkLi"></li>-->
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">描述信息：</label>
+            <div class="col-sm-7">
+                <input id="description" name="description" th:field="*{description}" class="form-control" type="text">
+            </div>
+        </div>
+        <!--		<div class="form-group">
+                    <label class="col-sm-3 control-label">修改时间：</label>
+                    <div class="col-sm-8">
+                        <input id="dataTime" name="dataTime" class="form-control" type="text">
+                    </div>
+                </div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">wid：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="wid" id="wid" th:field="*{wid}" onchange="widChange(this)">
+                    <!--<option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>-->
+                    <option value="w001">w001</option>
+                    <option value="w002">w002</option>
+                    <option value="w003">w003</option>
+                    <option value="w004">w004</option>
+                    <option value="w005">w005</option>
+                    <option value="w006">w006</option>
+                    <option value="w007">w007</option>
+                    <option value="w008">w008</option>
+                    <option value="w009">w009</option>
+                    <option value="w010">w010</option>
+                    <option value="w011">w011</option>
+                    <option value="w012">w012</option>
+                    <option value="w013">w013</option>
+                    <option value="w014">w014</option>
+                    <option value="w015">w015</option>
+                    <option value="w016">w016</option>
+                    <option value="w017">w017</option>
+                    <option value="w018">w018</option>
+                    <option value="w019">w019</option>
+                    <option value="w020">w020</option>
+                    <option value="w021">w021</option>
+                    <option value="w022">w022</option>
+                    <option value="w023">w023</option>
+                    <option value="w024">w024</option>
+                    <option value="w025">w025</option>
+                    <option value="w026">w026</option>
+                    <option value="w027">w027</option>
+                    <option value="w028">w028</option>
+                    <option value="w029">w029</option>
+                    <option value="w030">w030</option>
+                    <option value="w031">w031</option>
+                    <option value="w032">w032</option>
+                    <option value="w033">w033</option>
+                    <option value="w034">w034</option>
+                    <option value="w035">w035</option>
+                    <option value="w036">w036</option>
+                    <option value="w037">w037</option>
+                    <option value="w038">w038</option>
+                    <option value="w039">w039</option>
+                    <option value="w040">w040</option>
+                    <option value="w041">w041</option>
+                    <option value="w042">w042</option>
+                    <option value="w043">w043</option>
+                    <option value="w044">w044</option>
+                    <option value="w045">w045</option>
+                    <option value="w046">w046</option>
+                    <option value="w047">w047</option>
+                    <option value="w048">w048</option>
+                    <option value="w049">w049</option>
+                    <option value="w050">w050</option>
+                    <option value="w051">w051</option>
+                    <option value="w052">w052</option>
+                    <option value="w053">w053</option>
+                    <option value="w054">w054</option>
+                    <option value="w055">w055</option>
+                    <option value="w056">w056</option>
+                    <option value="w057">w057</option>
+                    <option value="w058">w058</option>
+                    <option value="w059">w059</option>
+                    <option value="w060">w060</option>
+                    <option value="w061">w061</option>
+                    <option value="w062">w062</option>
+                    <option value="w063">w063</option>
+                    <option value="w064">w064</option>
+                    <option value="w065">w065</option>
+                    <option value="w066">w066</option>
+                    <option value="w067">w067</option>
+                    <option value="w068">w068</option>
+                    <option value="w069">w069</option>
+                    <option value="w070">w070</option>
+                    <option value="w071">w071</option>
+                    <option value="w072">w072</option>
+                    <option value="w073">w073</option>
+                    <option value="w074">w074</option>
+                    <option value="w075">w075</option>
+                    <option value="w076">w076</option>
+                    <option value="w077">w077</option>
+                    <option value="w078">w078</option>
+                    <option value="w079">w079</option>
+                    <option value="w080">w080</option>
+                    <option value="w081">w081</option>
+                    <option value="w082">w082</option>
+                    <option value="w083">w083</option>
+                    <option value="w084">w084</option>
+                    <option value="w085">w085</option>
+                    <option value="w086">w086</option>
+                    <option value="w087">w087</option>
+                    <option value="w088">w088</option>
+                    <option value="w089">w089</option>
+                    <option value="w090">w090</option>
+                    <option value="w091">w091</option>
+                    <option value="w092">w092</option>
+                    <option value="w093">w093</option>
+                    <option value="w094">w094</option>
+                    <option value="w095">w095</option>
+                    <option value="w096">w096</option>
+                    <option value="w097">w097</option>
+                    <option value="w098">w098</option>
+                    <option value="w099">w099</option>
+                    <option value="w0100">w0100</option>
+                </select>
+            </div>
+            <div class="col-sm-1">
+                <!--<input type="hidden" id="isWidOk" value="yes"/>
+                <li style="width:10px;height:10px;border-radius: 50%;" id="isWidOkLi"></li>-->
+            </div>
+            <!-- <div class="col-sm-8">
+                 <input id="wid" name="wid" class="form-control" type="text" onchange="widChange(this)" required
+                        placeholder="wid号，不能重复，支持w001-w0100">
+             </div>-->
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">wiport：</label>
+            <div class="col-sm-7">
+                <input id="wiport" name="wiport" class="form-control" th:field="*{wiport}" onchange="portChange(this)"
+                       type="text" required
+                       placeholder="开放的端口">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">woport：</label>
+            <div class="col-sm-7">
+                <input id="woport" name="woport" class="form-control" type="text" th:field="*{woport}"
+                       disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">protocol：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="protocol" id="protocol" th:field="*{protocol}">
+                    <option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">allow_ip：</label>
+            <div class="col-sm-7">
+                <input id="allowIp" name="allowIp" class="form-control" type="text" th:field="*{allowIp}"
+                       placeholder="tcn1允许接如的IP地址，每个地址之间逗号隔开，最大支持10个">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">in_parmsa：</label>
+            <input id="in_parmsa" name="" th:field="*{inParmsa}" class="form-control" type="hidden">
+            <div class="col-sm-3">
+                <select class="form-control" name="in_parmsa1" id="in_parmsa1">
+                    <option value="TCP-LISTEN">TCP-LISTEN</option>
+                    <option value="UDP-LISTEN">UDP-LISTEN</option>
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <input id="in_parmsa2" name="in_parmsa2" class="form-control" type="text" disabled/>
+            </div>
+            <!-- <div class="col-sm-8">
+                 <input id="inParmsa" name="inParmsa" class="form-control" onchange="portChange(this)" type="text"
+                        placeholder="入口端的参数，端口与上面一直，TCP为TCP-LISTEN:端口，udp为UPD-LISTEN:端口">
+             </div>-->
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">in_parmsb：</label>
+            <input id="in_parmsb" name="" th:field="*{inParmsb}" class="form-control" type="hidden">
+
+            <div class="col-sm-2">
+                <input id="in_parmsb1" name="in_parmsb1" class="form-control" type="text" value="TCP" disabled>
+            </div>
+            <div class="col-sm-3">
+                <input id="in_parmsb2" name="in_parmsb2" class="form-control" type="text" required
+                       placeholder="ip">
+            </div>
+            <div class="col-sm-2">
+                <input id="in_parmsb3" name="in_parmsb3" class="form-control" type="text"
+                       disabled>
+            </div>
+            <div class="col-sm-1">
+<!--                <input type="hidden" id="isInParmsbOk" value="yes"/>-->
+                <li style="width:10px;height:10px;border-radius: 50%;" id="isInParmsOkLi"></li>
+            </div>
+            <!--  <div class="col-sm-1">
+                  <button type="button" class="btn btn-primary" onclick="checkInParmsOk()">检查</button>
+              </div>-->
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">out_parms：</label>
+            <input id="out_parms" name="" th:field="*{outParms}" class="form-control" type="hidden">
+            <div class="col-sm-2">
+                <select class="form-control" name="out_parms1" id="out_parms1">
+                    <option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <input id="out_parms2" name="out_parms2" class="form-control" type="text" required
+                       placeholder="服务器地址">
+            </div>
+            <div class="col-sm-2">
+                <input id="out_parms3" name="out_parms3" class="form-control" type="text" required
+                       onchange="checkOutParmsOk(this)"
+                       placeholder="端口">
+            </div>
+            <div class="col-sm-1">
+<!--                <input type="hidden" id="isOutParmsOk" value="yes"/>-->
+                <li style="width:10px;height:10px;border-radius: 50%;"
+                    id="isOutParmsOkLi"></li>
+            </div>
+            <!--   <div class="col-sm-1">
+                   <button type="button" class="btn btn-primary" onclick="checkOutParmsOk()"data-loading="正在验证端口，请稍后...">检查</button>
+               </div>-->
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">log_enable日志是否开启：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="log_enable" id="log_enable" th:field="*{logEnable}">
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">logfile：</label>
+            <div class="col-sm-7">
+                <input id="logfile" name="logfile" class="form-control" type="text" th:field="*{logfile}" required
+                       placeholder="日志文件位置">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">is_enable：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="is_enable" id="is_enable" th:field="*{isEnable}">
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-control-static col-sm-offset-10">
+                <button type="submit" class="btn btn-primary" id="submit">提交</button>
+                <button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "module/wdiodeumtService";
+    let success = false;
+    $(function () {
+        let serviceName = $("#serviceName");
+        let description = $("#description");
+        let wid = $("#wid");
+        let wiport = $("#wiport");
+        let woport = $("#woport");
+        let protocol = $("#protocol");
+        let allowIp = $("#allowIp");
+        let inParmsa1 = $("#in_parmsa1");
+        let inParmsa2 = $("#in_parmsa2");
+        let inParmsb1 = $("#in_parmsb1");
+        let inParmsb2 = $("#in_parmsb2");
+        let inParmsb3 = $("#in_parmsb3");
+        let outParms1 = $("#out_parms1");
+        let outParms2 = $("#out_parms2");
+        let outParms3 = $("#out_parms3");
+        let logEnable = $("#log_enable");
+        let logfile = $("#logfile");
+        let isEnable = $("#is_enable");
+    /*    let isInParmsOk = $("#isInParmsOk");
+        let isOutParmsOk = $("#isOutParmsOk");*/
+        //获取下拉列表对应的值
+    /*    let protocol1 = $("#protocol1");
+        let isEnable1 = $("#is_enable1");
+        let logEnable1 = $("#log_enable1");*/
+        let outParms = $("#out_parms");
+        let inParmsa = $("#in_parmsa");
+        let inParmsb = $("#in_parmsb");
+
+/*        //给下拉列表以及输入框赋值
+        $("#protocol option").each(function () {
+            if ($(this).val() == protocol1.val()) {
+                $(this).prop('selected', true);
+            }
+        });
+        $("#is_enable option").each(function () {
+            if ($(this).val() == isEnable1.val()) {
+                $(this).prop('selected', true);
+            }
+        });
+        $("#log_enable option").each(function () {
+            if ($(this).val() == logEnable1.val()) {
+                $(this).prop('selected', true);
+            }
+        });*/
+        $("#in_parmsa1 option").each(function () {
+            if ($(this).val() == inParmsa.val().split(":")[0]) {
+                $(this).prop('selected', true);
+            }
+        });
+        inParmsa2.val(inParmsa.val().split(":")[1]);
+        inParmsb2.val(inParmsb.val().split(":")[1]);
+        inParmsb3.val(inParmsb.val().split(":")[2]);
+        outParms2.val(outParms.val().split(":")[1]);
+        outParms3.val(outParms.val().split(":")[2]);
+        $("#out_parms1 option").each(function () {
+            if ($(this).val() == outParms.val().split(":")[0]) {
+                $(this).prop('selected', true);
+            }
+        });
+        $("#submit").on("click", function () {
+
+
+            if (wiport.val().length > 5) {
+                wiport.css("border", "1px solid red");
+                $.modal.alertWarning("端口长度过长");
+                return false;
+            }
+            /* if (serviceName.val().trim() === '' && wid.val().trim() === '') {
+                 $.modal.alertWarning("请填写服务名或wid");
+                 return false;
+             }
+
+             if (isServiceNameOk.val() == 'no' | isWid.val() == 'no') {
+                 serviceName.css("border", "1px solid red");
+                 wid.css("border", "1px solid red");
+                 $.modal.alertWarning("服务名称或wid已存在");
+                 return false;
+             }*/
+            if (wiport.val().trim() === '') {
+                wiport.css("border", "1px solid red");
+                $.modal.alertWarning("请填写需要开放的端口号");
+                return false;
+            }
+      /*      if (isInParmsOk.val() == 'no' | isOutParmsOk.val() == 'no') {
+
+                $.modal.alertWarning("本地或远程端口已被占用！");
+                return false;
+            }*/
+            if (allowIp.val().trim() === '') {
+                $.modal.alertWarning("请填写允许接入的IP地址");
+                allowIp.css("border", "1px solid red");
+                return false;
+            }
+            if (!validateAllowIp(allowIp)) {
+                return false;
+            }
+            if (inParmsb2.val().trim() === '') {
+                $.modal.alertWarning("请填写ip地址");
+                return false;
+            }
+            if (outParms2.val().trim() === '') {
+                $.modal.alertWarning("请填写服务器IP地址");
+                return false;
+            }
+            if (outParms3.val().trim() === '') {
+                $.modal.alertWarning("请填写服务器端口号");
+                return false;
+            }
+
+            let data = {
+                "id": $("#id").val(),
+                "serviceName": serviceName.val(),
+                "description": description.val(),
+                "wid": wid.val(),
+                "wiport": wiport.val(),
+                "woport": woport.val(),
+                "protocol": protocol.val(),
+                "allowIp": allowIp.val(),
+                "inParmsa": inParmsa1.val() + ':' + inParmsa2.val(),
+                "inParmsb": inParmsb1.val() + ':' + inParmsb2.val() + ':' + inParmsb3.val(),
+                "outParms": outParms1.val() + ':' + outParms2.val() + ':' + outParms3.val(),
+                "logEnable": logEnable.val(),
+                "logfile": logfile.val(),
+                "isEnable": isEnable.val()
+            }
+            //console.log(data)
+            $.operate.save(prefix + "/edit", data);
+        });
+
+    });
+
+    //后端数据格式msg:"",code:0,1;0是操作成功，但是我们是检查数据库是否已经存在某条数据，因此操作成功就是失败
+    /*    function serviceNameChange(item) {
+            let serviceName = $(item).val();
+            $.ajax({
+                url: prefix + "/checkServiceName",
+                data: {"serviceName": serviceName},
+                type: "post",
+                error: function (data) {
+                    $.modal.alertWarning("系统错误")
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        $("#isServiceNameOk").val("yes");
+                        $("#isServiceNameOkLi").css("background-color", "green");
+                    } else {
+                        $("#isServiceNameOk").val("no");
+                        $("#isServiceNameOkLi").css("background-color", "red");
+                    }
+                }
+            })
+        }*/
+
+    /* function widChange(item) {
+         console.log($(item).val())
+         let wid = $(item).val();
+         $.ajax({
+             url: prefix + "/checkWid",
+             data: {"wid": wid},
+             type: "post",
+             error: function (data) {
+                 $.modal.alertWarning("系统错误")
+             },
+             success: function (data) {
+                 if (data.code == 1) {
+                     $("#isWidOk").val("yes");
+                     $("#isWidOkLi").css("background-color", "green");
+                 } else {
+                     $("#isWidOk").val("no");
+                     $("#isWidOkLi").css("background-color", "red");
+                 }
+             }
+         })
+     }*/
+
+    function portChange(item) {
+
+        $("#woport").val($(item).val());
+        $("#in_parmsa2").val($(item).val() + ",fork");
+        $("#in_parmsb3").val($(item).val());
+        if ($("#wiport").val().trim() === '') {
+            return;
+        }
+        $.ajax({
+            url: prefix + "/checkPort",
+            data: {"port": $(item).val()},
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    $("#isInParmsbOk").val("yes");
+                    $("#isInParmsOkLi").css("background-color", "green");
+                } else {
+                    $("#isInParmsbOk").val("no");
+                    $("#isInParmsOkLi").css("background-color", "red");
+                }
+            }
+        })
+    }
+
+    //检查本地端口是否被占用
+    /* function checkInParmsOk() {
+         let port = $("#in_parmsa2").val();
+         $.ajax({
+             url: prefix + "/checkPort",
+             data: {"port": port},
+             type: "post",
+             error: function (data) {
+                 $.modal.alertWarning("系统错误")
+             },
+             success: function (data) {
+                 if (data.code == 0) {
+                     $("#isInParmsbOk").val("yes");
+                     $("#isInParmsOkLi").css("background-color", "green");
+                 } else {
+                     $("#isInParmsbOk").val("no");
+                     $("#isInParmsOkLi").css("background-color", "red");
+                 }
+             }
+         })
+     }
+ */
+    //检查远程端口是否被占用
+    function checkOutParmsOk() {
+        let port = $("#out_parms3").val();
+        let remoteIp = $("#out_parms2").val();
+        if (port.trim() === '') {
+            return;
+        }
+        $.ajax({
+            url: prefix + "/checkRemote",
+            data: {
+                "remoteIp": remoteIp,
+                "remotePort": port
+            },
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+            beforeSend: function () {
+                $("#isOutParmsOkLi").css("background-color", "");
+                $("#isOutParmsOkLi").text("正在检查端口可用性");
+
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    $("#isOutParmsOk").val("yes");
+                    $("#isOutParmsOkLi").text("");
+
+                    $("#isOutParmsOkLi").css("background-color", "green");
+                } else {
+                    $("#isOutParmsbOk").val("no");
+                    $("#isOutParmsOkLi").text("");
+
+                    $("#isOutParmsOkLi").css("background-color", "red");
+                }
+            }
+        })
+    }
+
+    function getDrawForWid() {
+        let option = '';
+        for (let i = 1; i < 101; i++) {
+            if (i < 10) {
+                option += '<option value="w00' + i + '">w00' + i + '</option>';
+            } else {
+                option += '<option value="w0' + i + '">w0' + i + '</option>';
+            }
+        }
+        return option;
+    }
+
+    function validateAllowIp(allowIp) {
+        if (allowIp.val().trim() === 'ALL') {
+            return true;
+        }
+        let arr = allowIp.val().trim().split(',');
+        if (arr.length > 10) {
+            $.modal.alertWarning("allowIp长度过长，最大支持10个ip");
+            allowIp.css("border", "1px solid red");
+            return false;
+        }
+        return true;
+    }
+
+    // $("#form-wdiodeumtService-add").validate({
+    //     rules: {
+    //         xxxx: {
+    //             required: true,
+    //         },
+    //     },
+    //     submitHandler: function (form) {
+    //         //$.operate.save(prefix + "/add", $('#form-wdiodeumtService-add').serialize());
+    //     }
+    // });
+
+
+    /* function widChange(item) {
+         let val = item.val();
+         let prefix = val.slice(0, 1);
+         let surfix = val.slice(1);
+         let flag1 = false;
+         let flag2 = false;
+         if (prefix == 'w') {
+             flag1 = true;
+         }
+         if (surfix >= 1 && surfix <= 100) {
+             flag2 = true;
+         }
+         if (flag1 && flag2) {
+             $(item).css("border", "1px solid green");
+             $("#submit").prop("disabled", false);
+             success = true;
+
+         } else {
+             $(item).css("border", "1px solid red");
+             $("#submit").prop("disabled", true);
+             success = false;
+         }
+     }*/
+</script>
+</body>
+</html>

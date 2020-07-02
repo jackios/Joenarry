@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-wdiodeConfig-edit" th:object="${wdiodeumtConfig}">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">配置项-键：</label>
+            <div class="col-sm-8">
+                <input id="w_key" name="w_key" th:field="*{w_key}" readonly class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">配置项-值：</label>
+            <div class="col-sm-8">
+                <input id="w_value" name="w_value" th:field="*{w_value}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">描述信息：</label>
+            <div class="col-sm-8">
+                <input id="description" name="description" th:field="*{description}" class="form-control" type="text">
+            </div>
+        </div>
+        <!--<div class="form-group">	-->
+        <!--<label class="col-sm-3 control-label">更改日期：</label>-->
+        <!--<div class="col-sm-8">-->
+        <!--<input id="w_time" name="w_time" th:field="*{w_time}" class="form-control" type="text">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">备注：</label>
+            <div class="col-sm-8">
+                <input id="comment" name="comment" readonly th:field="*{comment}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否保存到新版本：</label>
+            <div class="col-sm-8">
+                <div class="onoffswitch">
+                    <input type="checkbox" th:checked="false" class="onoffswitch-checkbox" id="reversion"
+                           name="reversion">
+                    <label class="onoffswitch-label" for="reversion">
+                        <span class="onoffswitch-inner"></span>
+                        <span class="onoffswitch-switch"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-control-static col-sm-offset-9">
+                <button type="submit" class="btn btn-primary" id="submit">提交</button>
+                <button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "module/wdiodeumtConfig";
+    var reversion = $("input[name='reversion']").is(':checked') == true ? 'yes' : 'no';
+    let flag = false;
+
+    $("#w_value").change(function () {
+        let submit = $("#submit");
+        if (flag) {
+            if (validateIP($(this).val())) {
+                submit.prop("disabled", false);
+                $(this).css("background-color", "white")
+            } else {
+                // $("#w_value").focus();
+                submit.prop("disabled", true);
+                $(this).css("background-color", "#fbe2e2")
+            }
+        }
+    })
+    $(function () {
+        if (validateIP($("#w_value").val())) {
+            //如果该配置项的值一开始就是IP地址
+            flag = true;
+        }
+        $("#reversion").change(function () {
+            if ($("input[name='reversion']").is(':checked') == true) {
+                $("#comment").removeAttr("readonly");
+                reversion = "yes";
+            } else {
+                $("#comment").attr("readonly", "readonly");
+                $("#comment").val("默认信息");
+                reversion = "no";
+            }
+        });
+    });
+
+
+    function validateIP(remoteIp) {
+        let exp = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+        let reg = remoteIp.match(exp);
+        return reg != null;
+
+    }
+
+    $("#form-wdiodeConfig-edit").validate({
+        rules: {
+            comment: {
+                required: true,
+                remote: {
+                    url: prefix + "/checkComment",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        "comment": function () {
+                            return $.common.trim($("#comment").val());
+                        },
+                        "reversion": function () {
+                            var reversion = ($("input[name='reversion']").is(':checked') == true) ? 'yes' : 'no';
+                            return reversion;
+                        }
+                    },
+                    dataFilter: function (data, type) {
+                        return $.validate.unique(data);
+                    }
+                }
+            },
+        },
+        messages: {
+            "comment": {
+                required: "版本备注信息必填",
+                remote: "版本备注信息不能为空或全部为空格"
+            },
+        },
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/edit/" + reversion, $('#form-wdiodeConfig-edit').serialize());
+        }
+    });
+</script>
+</body>
+</html>

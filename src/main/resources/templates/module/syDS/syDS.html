@@ -1,0 +1,251 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg" >
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="module:syDS:add">
+				<i class="fa fa-plus"></i> 新增
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="module:syDS:remove">
+				<i class="fa fa-trash-o"></i> 删除
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+    var buildFlag = [[${@permission.hasPermi('module:syDS:build')}]];
+    var editFlag = [[${@permission.hasPermi('module:syDS:edit')}]];
+    var startFlag = [[${@permission.hasPermi('module:syDS:start')}]];
+    var stopFlag = [[${@permission.hasPermi('module:syDS:stop')}]];
+        var prefix = ctx + "module/syDS"
+        
+        //$(document).ready(function(){
+		//	setInterval(update_col,1000)
+        // }); 
+        
+        function update_col() {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/upcol2",
+                data : {
+                	"id" : 1
+                	},
+                async : false,
+                success : function(data) {}
+            });
+        }
+		//$(document).ready(
+		//	    function firm() {  
+		//	        alert("当你离开这个界面时，同步不会自动停止。所以请在离开前确定它处于正确的状态...（所以你看到的正在同步可能是谁忘了关了...）");  
+		//	    }
+		//	);
+        
+        function DS_build_properties(id,groupId) {
+
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/build",
+                data : {
+                	"id" : id,
+                    "groupId" : groupId
+                },
+                async : false,
+                error : function(data) {
+                    $.modal.alertError("生成出现错误");
+                },
+                success : function(data) {
+                    if (data.code == 0) {
+                    	$.operate.freshCurrentTab();
+                        $.modal.alertWarning("生成成功，现在可以开始同步了");
+                    } else {
+                        $.modal.alertError(data.msg);
+                    }
+                }
+            });
+        }
+
+        function stop_sym(id) {
+
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/stop",
+                data : {
+                	"id" : id},
+                async : false,
+                error : function(data) {
+                    $.modal.alertError("关闭出现错误");
+                },
+                success : function(data) {
+                    if (data.code == 0) {
+                    	$.operate.freshCurrentTab();
+                        $.modal.alertWarning("关闭成功");
+                    } else {
+                    	alert(data.msg);
+                        $.operate.freshCurrentTab();
+                        //$.modal.alertError(data.msg);
+                    }
+                }
+            });
+        }
+        
+        function DS_start_system(id,groupId) {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/start",
+                data : {
+                	"id" : id,
+                    "groupId" : groupId
+                },
+                async : false,
+                error : function(data) {
+                    $.modal.alertError("同步出现错误");
+                },
+                success : function(data) {
+                    if (data.code == 0) {
+                    	$.operate.freshCurrentTab();
+                        $.modal.alertWarning("同步成功");
+                    } else {
+                        $.modal.alertError(data.msg);
+                    }
+                }
+            });
+            alert("当你离开这个界面时，同步不会自动停止。所以请在离开前确定它处于正确的状态...（所以你看到的正在同步可能是谁忘了关了...）"); 
+        }
+        /*function DS_stop_system(id,groupId) {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/stop",
+                data : {
+                	"id" : id,
+                    "groupId" : groupId
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("停止失败");
+                },
+                success : function(data) {
+                	$.operate.freshCurrentTab();
+                    $.modal.alertWarning("停止同步");
+                }
+            });
+        }*/
+        function doItPer20Second() {
+        	$.operate.freshCurrentTab();
+        }
+        
+
+        
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "DS设置",
+                search: false,
+                showExport: false,
+                showColumns: false,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '主键id' 
+				},
+				//{
+				//	field : 'externalId', 
+				//	title : '节点编号' 
+				//},
+				{
+					field : 'groupId', 
+					title : '节点组名' 
+				},
+				//{
+				//	field : 'dbDriver', 
+				//	title : '数据库驱动' 
+				//},
+				{
+					field : 'ip', 
+					title : '数据库ip' 
+				},
+				{
+					field : 'dataBaseN', 
+					title : '数据库名' 
+				},
+				{
+					field : 'dataBaseTableN', 
+					title : '数据库表名' 
+				},
+				//{
+				//	field : 'usrn', 
+				//	title : '数据库登陆账号' 
+				//},
+				{
+					field : 'registrationUrl', 
+					title : '同步ip' 
+				},
+				//{
+				//	field : 'routingTime', 
+				//	title : '检查数据库频率' 
+				//},
+				//{
+				//	field : 'pushTime', 
+				//	title : '推送频率' 
+				//},
+				//{
+				//	field : 'dontResend', 
+				//	title : '不再重发' 
+				//},
+				{
+					field : 'col1', 
+					title : '状态' ,
+					formatter: function(value, row, index) {
+						if(row.col1 != "否" && row.col1 != "无"){
+							return "是";
+						}
+						return row.col1;
+					}
+				},
+				{
+					field : 'col2', 
+					title : '同步数量' 
+				},
+				{
+					field : 'col3', 
+					title : '起始时间' 
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-info btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+		            	actions.push('<a class="btn btn-warning btn-xs ' + buildFlag + '" href="#" onclick="DS_build_properties(\'' + row.id + '\',\'' + row.groupId + '\')"><i class="fa fa-edit"></i>生成设置文件</a> ');
+		            	if (row.col1 == "否") {
+		            	actions.push('<a class="btn btn-success btn-xs ' + startFlag + '" href="#" onclick="DS_start_system(\'' + row.id + '\',\'' + row.groupId + '\')" ><i class="fa fa-arrow-up"></i>开启同步</a>');
+		            	}else{if (row.col1 != "无") {
+		            	actions.push('<a class="btn btn-danger btn-xs ' + stopFlag + '" href="#" onclick="stop_sym(\'' + row.id + '\')"><i class="fa fa-ban"></i>结束同步</a>');
+		            	var timer = setInterval(function(){doItPer20Second();},60000)
+		            	setInterval(update_col,10000)
+		            	}
+		            	}
+		            	return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

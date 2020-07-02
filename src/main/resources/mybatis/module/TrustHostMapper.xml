@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.trustHost.mapper.TrustHostMapper">
+    
+    <resultMap type="TrustHost" id="TrustHostResult">
+        <result property="id"    column="id"    />
+        <result property="ip"    column="ip"    />
+        <result property="mac"    column="mac"    />
+        <result property="isValid"    column="isValid"    />
+        <result property="description"    column="description"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectTrustHostVo">
+        select id, ip, mac, isValid, description, col1, col2, col3 from proc_trust_host
+    </sql>
+	
+    <select id="selectTrustHostList" parameterType="TrustHost" resultMap="TrustHostResult">
+        <include refid="selectTrustHostVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="ip != null  and ip != '' "> and ip = #{ip}</if>
+             <if test="mac != null  and mac != '' "> and mac = #{mac}</if>
+             <if test="isValid != null  and isValid != '' "> and isValid = #{isValid}</if>
+             <if test="description != null  and description != '' "> and description = #{description}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectTrustHostById" parameterType="Integer" resultMap="TrustHostResult">
+        <include refid="selectTrustHostVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTrustHost" parameterType="TrustHost">
+        insert into proc_trust_host
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="ip != null  and ip != ''  ">ip,</if>
+			<if test="mac != null  and mac != ''  ">mac,</if>
+			<if test="isValid != null  and isValid != ''  ">isValid,</if>
+			<if test="description != null  and description != ''  ">description,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="ip != null  and ip != ''  ">#{ip},</if>
+			<if test="mac != null  and mac != ''  ">#{mac},</if>
+			<if test="isValid != null  and isValid != ''  ">#{isValid},</if>
+			<if test="description != null  and description != ''  ">#{description},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateTrustHost" parameterType="TrustHost">
+        update proc_trust_host
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ip != null  and ip != ''  ">ip = #{ip},</if>
+            <if test="mac != null  and mac != ''  ">mac = #{mac},</if>
+            <if test="isValid != null  and isValid != ''  ">isValid = #{isValid},</if>
+            <if test="description != null  and description != ''  ">description = #{description},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteTrustHostById" parameterType="Integer">
+        delete from proc_trust_host where id = #{id}
+    </delete>
+	
+    <delete id="deleteTrustHostByIds" parameterType="String">
+        delete from proc_trust_host where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="btn-group hidden-xs" id="toolbar" role="group">
+        <a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()"
+           shiro:hasPermission="module:wdiodeumtService:view">
+            <i class="fa fa-plus"></i> 新增
+        </a>
+        <a class="btn btn-outline btn-primary btn-rounded" onclick="fileSync()"
+           shiro:hasPermission="module:wdiodeumtConfig:view">
+            <i class="glyphicon glyphicon-refresh icon-refresh"></i> 文件同步
+        </a>
+        <a class="btn btn-outline btn-success btn-rounded" onclick="startAll()"
+           shiro:hasPermission="module:wdiodeumtService:view">
+            <i class="glyphicon glyphicon-ok"></i> 全部运行
+        </a>
+        <a class="btn btn-outline btn-danger btn-rounded" onclick="stopAll()"
+           shiro:hasPermission="module:wdiodeumtService:view">
+            <i class="glyphicon glyphicon-remove"></i> 全部停止
+        </a>
+        <a class="btn btn-outline btn-primary btn-rounded" onclick="uploadToDB()" shiro:hasPermission="module:wdiodeumtConfig:view">
+            <i class="glyphicon glyphicon-cloud-upload"></i> 同步至数据库
+        </a><!--
+        <a class="btn btn-outline btn-danger btn-rounded" onclick="$.operate.removeAll()" shiro:hasPermission="module:wdiodeumtService:view">
+            <i class="fa fa-trash-o"></i> 删除
+        </a>-->
+
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+        <table id="bootstrap-table" data-mobile-responsive="true"></table>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('module:wdiodeumtService:view')}]];
+    var removeFlag = [[${@permission.hasPermi('module:wdiodeumtService:view')}]];
+    var rebootFlag = [[${@permission.hasPermi('module:serviceM:reboot')}]];
+    var reloadFlag = [[${@permission.hasPermi('module:serviceM:reload')}]];
+    var controlFlag = [[${@permission.hasPermi('module:serviceM:control')}]];
+    var prefix = ctx + "module/wdiodeumtService"
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            modalName: "端口注册服务",
+            columns: [{
+                checkbox: false
+            },
+                /*	{
+                        field : 'id',
+                        title : '主键'
+                    },*/
+                {
+                    field: 'serviceName',
+                    title: '服务名'
+                },
+                {
+                    field: 'description',
+                    title: '描述信息'
+                },
+                /*{
+                    field : 'dataTime',
+                    title : '修改时间'
+                },*/
+                {
+                    field: 'wid',
+                    title: 'wid号'
+                },
+                {
+                    field: 'wiport',
+                    title: '开放端口'
+                },
+                //{
+              //      field: 'woport',
+              //      title: '开放端口'
+				//	
+                //},
+                {
+                    field: 'protocol',
+                    title: '协议'
+                },
+                {
+                    field: 'allowIp',
+                    title: '授权主机'
+                },
+                {
+                    field: 'inParmsa',
+                    title: '入口端参数',
+                    visible: false
+                },
+                {
+                    field: 'inParmsb',
+                    title: '单向网卡IP',
+                    visible: false
+                },
+                {
+                    field: 'outParms',
+                    title: '服务器地址'
+                },
+                {
+                    field: 'logEnable',
+                    title: '日志是否开启'
+                },
+                {
+                    field: 'logfile',
+                    title: '日志文件位置',
+                    visible: false
+                },
+                {
+                    field: 'isEnable',
+                    title: '是否启用'
+                },
+                {
+                    field: 'currentStatus',
+                    title: '服务状态',
+                    formatter: function (value, row, index) {
+                        if (value == "未运行") {
+                            return '<span style="color:#c12e2a;">' + value + '</span>';
+                        } else if (value == "运行中") {
+                            return '<span style="color:#3e8f3e">' + value + '</span>';
+                        }
+
+                        return '<span style="color:#8f7d20">' + value + '</span>';
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        if (row.isEnable == "no") {
+                            actions.push('<a class="btn btn-success btn-xs ' + controlFlag + '" href="#" onclick="operation(\'' + row.id + '\',\'enable\')"><i class="fa  fa-arrow-up"></i>启用</a> ');
+                        } else {
+                            actions.push('<a class="btn btn-warning btn-xs ' + controlFlag + '" href="#" onclick="operation(\'' + row.id + '\',\'disable\')"><i class="fa fa-ban"></i>禁用</a>');
+                        }
+                        if (row.currentStatus == "运行中") {
+                            actions.push('<a class="btn btn-danger btn-xs ' + rebootFlag + '" href="#" onclick="operation(\'' + row.id + '\',\'stop\')"><i class="fa fa-pause"></i>停止</a> ');
+                        } else {
+                            actions.push('<a class="btn btn-info btn-xs ' + rebootFlag + '" href="#" onclick="operation(\'' + row.id + '\',\'start\')"><i class="fa fa-play"></i>运行</a> ');
+
+                        }
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+
+    /*  function searchFile() {
+          $.ajax({
+              cache: true,
+              type: "POST",
+              url: prefix + "/searchFile",
+              data: {},
+              error: function (request) {
+                  $.modal.alertError("系统错误");
+              },
+              success: function (data) {
+                  if (data.code == 0) {
+                      let flag = window.confirm("检测到配置文件的更新，是否立即覆盖更新？");
+                      if (flag) {
+                          console.log("updateFIle is exec")
+                          updateFile();
+                      } else {
+                          deleteFile();
+                      }
+                  }
+              }
+          });
+
+      }
+
+      function updateFile() {
+          $.ajax({
+              cache: true,
+              type: "POST",
+              url: prefix + "/updateFile",
+              data: {},
+              error: function (request) {
+                  $.modal.alertError("系统错误");
+              },
+              success: function (data) {
+                  // $.modal.alertWarning("配置文件更新成功");
+                  $.modal.msgReload("配置文件更新成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+
+              }
+          });
+
+      }
+
+      function deleteFile() {
+          $.ajax({
+              cache: true,
+              type: "POST",
+              url: prefix + "/deleteFile",
+              data: {},
+              error: function (request) {
+                  $.modal.alertError("系统错误");
+              },
+              success: function (data) {
+              }
+          });
+
+      }*/
+
+    function fileSync() {
+        $.modal.confirm("是否同步配置文件到出口端？", function () {
+            $.modal.loading("正在进行文件同步，请稍后...");
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: prefix + "/fileSync",
+                data: {},
+                async: false,
+                error: function (request) {
+                    $.modal.closeLoading();
+                    $.modal.alertError("系统错误");
+                },
+                success: function (data) {
+                    $.operate.ajaxSuccess(data);
+                }
+
+            });
+        });
+    }
+    function uploadToDB() {
+        $.modal.confirm("是否同步本地配置文件至数据库？",function () {
+            $.modal.loading("正在将本地配置文件同步至数据库，请稍后...");
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/uploadToDB",
+                data : {},
+                async : false,
+                error : function(request) {
+                    $.modal.closeLoading();
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    //$.operate.saveSuccess(data);
+                    $.operate.ajaxSuccess(data);
+                }
+            });
+        });
+    }
+    function operation(id, url) {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: prefix + "/" + url,
+            data: {
+                "id": id
+            },
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (data) {
+                //$.operate.saveSuccess(data);
+                $.operate.ajaxSuccess(data);
+            }
+        });
+    }
+
+    function startAll() {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: prefix + "/startAll",
+            data: {},
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (data) {
+                //$.operate.saveSuccess(data);
+                $.operate.ajaxSuccess(data);
+            }
+        });
+    }
+
+    function stopAll() {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: prefix + "/stopAll",
+            data: {},
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (data) {
+                //$.operate.saveSuccess(data);
+                $.operate.ajaxSuccess(data);
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-trustHost-edit" th:object="${trustHost}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">授权IP地址：</label>
+                <div class="col-sm-8">
+                    <input id="ip" name="ip" th:field="*{ip}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">授权MAC地址：</label>
+                <div class="col-sm-8">
+                    <input id="mac" name="mac" th:field="*{mac}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否启用：</label>
+                <div class="col-sm-8">
+                    <div class="onoffswitch">
+                        <input type="checkbox" th:checked="*{isValid == 'yes' ? true : false}" class="onoffswitch-checkbox" id="isValid" name="isValid">
+                        <label class="onoffswitch-label" for="isValid">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">	
+                <label class="col-sm-3 control-label">描述信息：</label>
+                <div class="col-sm-8">
+                    <input id="description" name="description" th:field="*{description}" class="form-control" type="text">
+                </div>
+            </div>
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">附加列1：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="col1" name="col1" th:field="*{col1}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">附加列2：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="col2" name="col2" th:field="*{col2}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">	-->
+                <!--<label class="col-sm-3 control-label">附加列3：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<input id="col3" name="col3" th:field="*{col3}" class="form-control" type="text">-->
+                <!--</div>-->
+            <!--</div>-->
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "module/trustHost"
+
+        $("#form-trustHost-edit").validate({
+            rules:{
+                ip:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkIpAddress",
+                        type:'post',
+                        dataType: "json",
+                        data: {
+                            "ip": function() {
+                                return $.common.trim($("#ip").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+            },
+            messages: {
+                "ip": {
+                    required: "IP地址必填",
+                    remote: "IP地址必须符合点分十进制表示法"
+                },
+            },
+            submitHandler:function(form){
+                edit();
+            }
+        });
+
+        function edit() {
+            var ip = $("input[name='ip']").val();
+            var mac = $("input[name='mac']").val();
+            var description = $("input[name='description']").val();
+            var id = $("input[name='id']").val();
+            var isValid = $("input[name='isValid']").is(':checked') == true ? 'yes' : 'no';
+
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/edit",
+                data : {
+                    "ip" : ip,
+                    "mac": mac,
+                    "description": description,
+                    "id": id,
+                    "isValid": isValid
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.saveSuccess(data);
+                }
+            });
+        }
+
+		// $("#form-trustHost-edit").validate({
+		// 	rules:{
+		// 		xxxx:{
+		// 			required:true,
+		// 		},
+		// 	},
+		// 	submitHandler: function(form) {
+		// 		$.operate.save(prefix + "/edit", $('#form-trustHost-edit').serialize());
+		// 	}
+		// });
+	</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cs2c.project.module.serviceReq.mapper.ServiceReqMapper">
+
+	<resultMap type="ServiceReq" id="ServiceReqResult">
+		<result property="id" column="id" />
+		<result property="host" column="host" />
+		<result property="url" column="url" />
+		<result property="time" column="time" />
+		<result property="rSize" column="r_size" />
+		<result property="rFile" column="r_file" />
+		<result property="pid" column="pid" />
+		<result property="method" column="method" />
+		<result property="col1" column="col1" />
+		<result property="col2" column="col2" />
+		<result property="col3" column="col3" />
+	</resultMap>
+
+	<sql id="selectServiceReqVo">
+		select id, host, url, time, r_size, r_file, pid, method, col1, col2, col3
+		from sys_service_req
+	</sql>
+
+	<select id="selectServiceReqList" parameterType="ServiceReq"
+		resultMap="ServiceReqResult">
+		<include refid="selectServiceReqVo" />
+		<where>
+			<if test="id != null "> and id = #{id}</if>
+			<if test="host != null  and host != '' "> and host REGEXP #{host}</if>
+			<if test="url != null  and url != '' "> and url = #{url}</if>
+			<if test="time != null "> and time = #{time}</if>
+			<if test="rSize != null  and rSize != '' "> and r_size = #{rSize}</if>
+			<if test="rFile != null  and rFile != '' "> and r_file = #{rFile}</if>
+			<if test="pid != null  and pid != '' "> and pid = #{pid}</if>
+			<if test="method != null  and method != '' "> and method = #{method}</if>
+			<if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+			<if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+			<if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+		</where>
+	</select>
+
+
+	<select id="selectServiceReqById" parameterType="Long"
+		resultMap="ServiceReqResult">
+		<include refid="selectServiceReqVo" />
+		where id = #{id}
+	</select>
+
+	<select id="selectServiceReqByYear" resultType="int">
+		select count(1) as count from sys_service_req
+		<where>
+			<if test="year != null "> year(time) = #{year}</if>
+			<if test="month != null "> and month(time) = #{month}</if>
+			<if test="day != null "> and day(time) = #{day}</if>
+			<if test="hour != null "> and hour(time) = #{hour}</if>
+			<if test="dir != null "> and host REGEXP #{dir}</if>
+		</where>
+	</select>
+
+        
+    <insert id="insertServiceReq" parameterType="ServiceReq">
+        insert into sys_service_req
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="host != null  and host != ''  ">host,</if>
+			<if test="url != null  and url != ''  ">url,</if>
+			<if test="time != null  ">time,</if>
+			<if test="rSize != null  and rSize != ''  ">r_size,</if>
+			<if test="rFile != null  and rFile != ''  ">r_file,</if>
+			<if test="pid != null  and pid != ''  ">pid,</if>
+			<if test="method != null  and method != ''  ">method,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="host != null  and host != ''  ">#{host},</if>
+			<if test="url != null  and url != ''  ">#{url},</if>
+			<if test="time != null  ">#{time},</if>
+			<if test="rSize != null  and rSize != ''  ">#{rSize},</if>
+			<if test="rFile != null  and rFile != ''  ">#{rFile},</if>
+			<if test="pid != null  and pid != ''  ">#{pid},</if>
+			<if test="method != null  and method != ''  ">#{method},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+
+    <update id="updateServiceReq" parameterType="ServiceReq">
+        update sys_service_req
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="host != null  and host != ''  ">host = #{host},</if>
+            <if test="url != null  and url != ''  ">url = #{url},</if>
+            <if test="time != null  ">time = #{time},</if>
+            <if test="rSize != null  and rSize != ''  ">r_size = #{rSize},</if>
+            <if test="rFile != null  and rFile != ''  ">r_file = #{rFile},</if>
+            <if test="pid != null  and pid != ''  ">pid = #{pid},</if>
+            <if test="method != null  and method != ''  ">method = #{method},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteServiceReqById" parameterType="Long">
+		delete from sys_service_req where id = #{id}
+	</delete>
+
+	<delete id="deleteServiceReqByIds" parameterType="String">
+		delete from sys_service_req where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

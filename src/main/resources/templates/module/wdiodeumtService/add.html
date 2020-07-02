@@ -1,0 +1,424 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-wdiodeumtService-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">服务名：</label>
+            <div class="col-sm-7">
+                <input id="serviceName" name="serviceName" class="form-control" type="text" required
+                       onchange="serviceNameChange(this)"
+                       placeholder="注册端口标识，唯一">
+            </div>
+            <div class="col-sm-1">
+                <input type="hidden" id="isServiceNameOk" value="no"/>
+                <li style="width:10px;height:10px;border-radius: 50%;"
+                    id="isServiceNameOkLi"></li>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">描述信息：</label>
+            <div class="col-sm-7">
+                <input id="description" name="description" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">wid号：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="wid" id="wid">
+					   <option value="123">123</option>
+                    <!--<option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>-->
+                </select>
+            </div>
+            <div class="col-sm-1">
+                <input type="hidden" id="isWidOk" value="no"/>
+                <li style="width:10px;height:10px;border-radius: 50%;" id="isWidOkLi"></li>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">开放端口：</label>
+            <div class="col-sm-7">
+                <input id="wiport" name="wiport" class="form-control" onchange="portChange(this)" type="text" required
+                       placeholder="开放的端口">
+            </div>
+            <div class="col-sm-1">
+                <input type="hidden" id="isInParmsbOk" value="no"/>
+                <li style="width:10px;height:10px;border-radius: 50%;" id="isInParmsOkLi"></li>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">开放端口：</label>
+            <div class="col-sm-7">
+                <input id="woport" name="woport" class="form-control" type="text"
+                       disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">协议：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="protocol" id="protocol" onchange="protocolChange()">
+                    <option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">授权主机：</label>
+            <div class="col-sm-7">
+                <input id="allowIp" name="allowIp" class="form-control" type="text"
+                       placeholder="tcn1允许接入的IP地址,多个地址逗号(英文)隔开,最多10个">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">入口端参数：</label>
+            <div class="col-sm-3">
+                <!--<select class="form-control" name="in_parmsa1" id="in_parmsa1">
+                    <option value="TCP-LISTEN">TCP-LISTEN</option>
+                    <option value="UDP-LISTEN">UDP-LISTEN</option>
+                </select>-->
+                <input id="in_parmsa1" name="in_parmsa1" class="form-control" type="text" value="TCP-LISTEN" disabled/>
+            </div>
+            <div class="col-sm-4">
+                <input id="in_parmsa2" name="in_parmsa2" class="form-control" type="text" disabled/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">单向网卡IP：</label>
+            <div class="col-sm-2">
+                <input id="in_parmsb1" name="in_parmsb1" class="form-control" type="text" value="TCP" disabled>
+            </div>
+            <div class="col-sm-3">
+                <input id="in_parmsb2" name="in_parmsb2" class="form-control" type="text" required
+                       placeholder="ip">
+            </div>
+            <div class="col-sm-2">
+                <input id="in_parmsb3" name="in_parmsb3" class="form-control" type="text"
+                       disabled>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">服务器地址：</label>
+            <div class="col-sm-2">
+                <select class="form-control" name="out_parms1" id="out_parms1">
+                    <option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <input id="out_parms2" name="out_parms2" class="form-control" type="text" required
+                       placeholder="服务器地址">
+            </div>
+            <div class="col-sm-2">
+                <input id="out_parms3" name="out_parms3" class="form-control" type="text" required
+                       onchange="checkOutParmsOk(this)"
+                       placeholder="端口">
+            </div>
+            <div class="col-sm-1">
+                <input type="hidden" id="isOutParmsOk" value="no"/>
+                <li style="width:10px;height:10px;border-radius: 50%;"
+                    id="isOutParmsOkLi"></li>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">日志是否开启：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="log_enable" id="log_enable">
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">日志文件位置：</label>
+            <div class="col-sm-7">
+                <input id="logfile" name="logfile" class="form-control" type="text" required placeholder="日志文件位置">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否启用：</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="is_enable" id="is_enable">
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-control-static col-sm-offset-10">
+                <button type="submit" class="btn btn-primary" id="submit">提交</button>
+                <button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "module/wdiodeumtService";
+    $(function () {
+        $("#wid").html(getDrawForWid());
+    });
+
+    $("#form-wdiodeumtService-add").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        },
+        submitHandler: function (form) {
+            let serviceName = $("#serviceName");
+            let description = $("#description");
+            let wid = $("#wid");
+            let wiport = $("#wiport");
+            let woport = $("#woport");
+            let protocol = $("#protocol");
+            let allowIp = $("#allowIp");
+            let inParmsa1 = $("#in_parmsa1");
+            let inParmsa2 = $("#in_parmsa2");
+            let inParmsb1 = $("#in_parmsb1");
+            let inParmsb2 = $("#in_parmsb2");
+            let inParmsb3 = $("#in_parmsb3");
+            let outParms1 = $("#out_parms1");
+            let outParms2 = $("#out_parms2");
+            let outParms3 = $("#out_parms3");
+            let logEnable = $("#log_enable");
+            let logfile = $("#logfile");
+            let isEnable = $("#is_enable");
+            let isServiceNameOk = $("#isServiceNameOk");
+            let isWid = $("#isWidOk");
+            let isInParmsOk = $("#isInParmsOk");
+            let isOutParmsOk = $("#isOutParmsOk");
+
+            if (wiport.val().length > 5) {
+                wiport.css("border", "1px solid red");
+                $.modal.alertWarning("端口长度过长");
+                wiport.focus();
+                return false;
+            }
+            if (isServiceNameOk.val() == 'no') {
+                serviceName.css("border", "1px solid red");
+                $.modal.alertWarning("服务名称已存在");
+                return false;
+            }
+            if (isInParmsOk.val() == 'no' || isOutParmsOk.val() == 'no') {
+
+                $.modal.alertWarning("本地或远程端口已被占用！");
+                return false;
+            }
+            if (!validateAllowIp(allowIp)) {
+                return false;
+            }
+            if (!validateIP(outParms2.val())) {
+                outParms2.css("background-color", "#fbe2e2");
+                $.modal.alertWarning("ip地址格式不正确");
+                outParms2.focus();
+                return false;
+            }
+            if (!validateIP(inParmsb2.val())) {
+                inParmsb2.css("background-color", "#fbe2e2");
+                $.modal.alertWarning("ip地址格式不正确");
+                inParmsb2.focus();
+                return false;
+            }
+            let data = {
+                "serviceName": serviceName.val(),
+                "description": description.val(),
+                "wid": wid.val(),
+                "wiport": wiport.val(),
+                "woport": woport.val(),
+                "protocol": protocol.val(),
+                "allowIp": allowIp.val(),
+                "inParmsa": inParmsa1.val() + ':' + inParmsa2.val(),
+                "inParmsb": inParmsb1.val() + ':' + inParmsb2.val() + ':' + inParmsb3.val(),
+                "outParms": outParms1.val() + ':' + outParms2.val() + ':' + outParms3.val(),
+                "logEnable": logEnable.val(),
+                "logfile": logfile.val(),
+                "isEnable": isEnable.val()
+            }
+            $.operate.save(prefix + "/add", data/*$('#form-wdiodeumtService-add').serialize()*/);
+        }
+    });
+
+    //后端数据格式msg:"",code:0,1;0是操作成功，但是我们是检查数据库是否已经存在某条数据，因此操作成功就是失败
+    function serviceNameChange(item) {
+        let serviceName = $(item).val();
+        $.ajax({
+            url: prefix + "/checkServiceName",
+            data: {"serviceName": serviceName},
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    $("#isServiceNameOk").val("yes");
+                    $("#isServiceNameOkLi").css("background-color", "green");
+                } else {
+                    $("#isServiceNameOk").val("no");
+                    $("#isServiceNameOkLi").css("background-color", "red");
+                }
+            }
+        })
+    }
+
+    function validateIP(remoteIp) {
+        let exp = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+        let reg = remoteIp.match(exp);
+        return reg != null;
+
+    }
+
+    function portChange(item) {
+        $("#woport").val($(item).val());
+        $("#in_parmsa2").val($(item).val() + ",fork");
+        $("#in_parmsb3").val($(item).val());
+        if ($("#wiport").val().trim() === '') {
+            return;
+        }
+        $.ajax({
+            url: prefix + "/checkPort",
+            data: {"port": $(item).val()},
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    $("#isInParmsbOk").val("yes");
+                    $("#isInParmsOkLi").css("background-color", "green");
+                } else {
+                    $("#isInParmsbOk").val("no");
+                    $("#isInParmsOkLi").css("background-color", "red");
+                }
+            }
+        })
+    }
+    function protocolChange() {
+        let select = $("#protocol option:selected");
+        $("#in_parmsa1").val(select.val() + '-LISTEN');
+    }
+
+    //检查远程端口是否被占用
+    function checkOutParmsOk() {
+        let port = $("#out_parms3").val();
+        let remoteIp = $("#out_parms2").val();
+        if (port.trim() === '') {
+            $("#out_parms3").css("background-color", "#fbe2e2");
+            $("#out_parms3").focus();
+            return;
+        }
+        if (port.trim().length > 5 || port.trim() < 0) {
+            $("#out_parms3").css("background-color", "#fbe2e2");
+            $("#out_parms3").focus();
+            return;
+        }
+        $.ajax({
+            url: prefix + "/checkRemote",
+            data: {
+                "remoteIp": remoteIp,
+                "remotePort": port
+            },
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+            beforeSend: function () {
+                $("#isOutParmsOkLi").css("background-color", "");
+                $("#isOutParmsOkLi").text("正在检查端口可用性");
+
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    $("#isOutParmsOk").val("yes");
+                    $("#isOutParmsOkLi").text("");
+                    $("#out_parms3").css("background-color", "white");
+                    $("#out_parms2").css("background-color", "white");
+                    $("#out_parms3").focus();
+                    $("#isOutParmsOkLi").css("background-color", "green");
+                } else {
+                    $("#isOutParmsbOk").val("no");
+                    $("#isOutParmsOkLi").text("");
+                    $("#out_parms3").css("background-color", "#fbe2e2");
+                    $("#out_parms2").css("background-color", "#fbe2e2");
+                    $("#out_parms3").focus();
+                    $("#isOutParmsOkLi").css("background-color", "red");
+                }
+            }
+        })
+    }
+
+    //获取wid列表，并对重复的wid进行过滤
+    function getDrawForWid() {
+        let wids = [];
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: prefix + "/list",
+            data: {},
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (data) {
+                for (let i = 0; i < data.total; i++) {
+                    wids[i] = data.rows[i].wid;
+                }
+            }
+        });
+        let option = '';
+        for (let i = 0; i < 100; i++) {
+            if (i < 9) {
+                let wid = 'w00' + (i + 1);
+                if (wids.find(function (value) {
+                    if (value == wid) {
+                        return true;
+                    }
+                })) {
+                    continue;
+                }
+                option += '<option value="' + wid + '">' + wid + '</option>';
+            } else {
+                let wid = 'w0' + (i + 1);
+                if (wids.find(function (value) {
+                    if (value == wid) {
+                        return true;
+                    }
+                })) {
+                    continue;
+                }
+                option += '<option value="' + wid + '">' + wid + '</option>';
+            }
+        }
+        return option;
+    }
+
+    //对授权主机进行校验，还未加入单个对IP地址的校验
+    function validateAllowIp(allowIp) {
+        if (allowIp.val().trim() === 'ALL' || allowIp.val().trim() === 'all') {
+            return true;
+        }
+        let arr = allowIp.val().trim().split(',');
+        console.log(arr)
+        if (arr.length > 10 && allowIp.val().trim() !== '') {
+            $.modal.alertWarning("授权主机IP长度过长，最大支持10个ip");
+            allowIp.css("border", "1px solid red");
+            return false;
+        } else {
+            for (let i = 0; i < arr.length; i++) {
+                if (!validateIP(arr[i])) {
+                    $.modal.alertWarning("授权主机IP中第" + (i + 1) + "个IP格式错误！");
+                    allowIp.focus();
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>

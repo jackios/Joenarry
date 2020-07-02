@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.netdevinfo.mapper.NetdevinfoMapper">
+    
+    <resultMap type="Netdevinfo" id="NetdevinfoResult">
+        <result property="id"    column="id"    />
+        <result property="devName"    column="dev_name"    />
+        <result property="ipaddr"    column="ipaddr"    />
+        <result property="netmask"    column="netmask"    />
+        <result property="gateway"    column="gateway"    />
+        <result property="onboot"    column="onboot"    />
+        <result property="linkStatus"    column="link_status"    />
+        <result property="isActive"    column="isActive"    />
+        <result property="mac"    column="mac"    />
+        <result property="comment"    column="comment"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectNetdevinfoVo">
+        select id, dev_name, ipaddr, netmask, gateway, onboot, link_status, isActive, mac, comment, col1, col2, col3 from proc_netdevinfo
+    </sql>
+	
+    <select id="selectNetdevinfoList" parameterType="Netdevinfo" resultMap="NetdevinfoResult">
+        <include refid="selectNetdevinfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="devName != null  and devName != '' "> and dev_name = #{devName}</if>
+             <if test="ipaddr != null  and ipaddr != '' "> and ipaddr = #{ipaddr}</if>
+             <if test="netmask != null  and netmask != '' "> and netmask = #{netmask}</if>
+             <if test="gateway != null  and gateway != '' "> and gateway = #{gateway}</if>
+             <if test="onboot != null  and onboot != '' "> and onboot = #{onboot}</if>
+             <if test="linkStatus != null  and linkStatus != '' "> and link_status = #{linkStatus}</if>
+             <if test="isActive != null  and isActive != '' "> and isActive = #{isActive}</if>
+             <if test="mac != null  and mac != '' "> and mac = #{mac}</if>
+             <if test="comment != null  and comment != '' "> and comment = #{comment}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectNetdevinfoById" parameterType="Integer" resultMap="NetdevinfoResult">
+        <include refid="selectNetdevinfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <!--<insert id="insertNetdevinfo" parameterType="Netdevinfo">-->
+        <!--insert into proc_netdevinfo-->
+		<!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+			<!--<if test="id != null  ">id,</if>-->
+			<!--<if test="devName != null  and devName != ''  ">dev_name,</if>-->
+			<!--<if test="ipaddr != null  and ipaddr != ''  ">ipaddr,</if>-->
+			<!--<if test="netmask != null  and netmask != ''  ">netmask,</if>-->
+			<!--<if test="gateway != null  and gateway != ''  ">gateway,</if>-->
+			<!--<if test="onboot != null  and onboot != ''  ">onboot,</if>-->
+			<!--<if test="linkStatus != null  and linkStatus != ''  ">link_status,</if>-->
+			<!--<if test="isActive != null  and isActive != ''  ">isActive,</if>-->
+			<!--<if test="mac != null  and mac != ''  ">mac,</if>-->
+			<!--<if test="comment != null  and comment != ''  ">comment,</if>-->
+			<!--<if test="col1 != null  and col1 != ''  ">col1,</if>-->
+			<!--<if test="col2 != null  and col2 != ''  ">col2,</if>-->
+			<!--<if test="col3 != null  and col3 != ''  ">col3,</if>-->
+         <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+			<!--<if test="id != null  ">#{id},</if>-->
+			<!--<if test="devName != null  and devName != ''  ">#{devName},</if>-->
+			<!--<if test="ipaddr != null  and ipaddr != ''  ">#{ipaddr},</if>-->
+			<!--<if test="netmask != null  and netmask != ''  ">#{netmask},</if>-->
+			<!--<if test="gateway != null  and gateway != ''  ">#{gateway},</if>-->
+			<!--<if test="onboot != null  and onboot != ''  ">#{onboot},</if>-->
+			<!--<if test="linkStatus != null  and linkStatus != ''  ">#{linkStatus},</if>-->
+			<!--<if test="isActive != null  and isActive != ''  ">#{isActive},</if>-->
+			<!--<if test="mac != null  and mac != ''  ">#{mac},</if>-->
+			<!--<if test="comment != null  and comment != ''  ">#{comment},</if>-->
+			<!--<if test="col1 != null  and col1 != ''  ">#{col1},</if>-->
+			<!--<if test="col2 != null  and col2 != ''  ">#{col2},</if>-->
+			<!--<if test="col3 != null  and col3 != ''  ">#{col3},</if>-->
+         <!--</trim>-->
+    <!--</insert>-->
+	 
+    <update id="updateNetdevinfo" parameterType="Netdevinfo">
+        update proc_netdevinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="devName != null  and devName != ''  ">dev_name = #{devName},</if>
+            <if test="ipaddr != null  and ipaddr != ''  ">ipaddr = #{ipaddr},</if>
+            <if test="netmask != null  and netmask != ''  ">netmask = #{netmask},</if>
+            <if test="gateway != null  and gateway != ''  ">gateway = #{gateway},</if>
+            <if test="onboot != null  and onboot != ''  ">onboot = #{onboot},</if>
+            <if test="linkStatus != null  and linkStatus != ''  ">link_status = #{linkStatus},</if>
+            <if test="isActive != null  and isActive != ''  ">isActive = #{isActive},</if>
+            <if test="mac != null  and mac != ''  ">mac = #{mac},</if>
+            <if test="comment != null  and comment != ''  ">comment = #{comment},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<!--<delete id="deleteNetdevinfoById" parameterType="Integer">-->
+        <!--delete from proc_netdevinfo where id = #{id}-->
+    <!--</delete>-->
+	<!---->
+    <!--<delete id="deleteNetdevinfoByIds" parameterType="String">-->
+        <!--delete from proc_netdevinfo where id in -->
+        <!--<foreach item="id" collection="array" open="(" separator="," close=")">-->
+            <!--#{id}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+    
+</mapper>

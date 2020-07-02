@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-wdiodeumtService-edit" th:object="${wdiodeumtService}">
+        <input id="id" name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">注册端口标识，唯一：</label>
+            <div class="col-sm-8">
+                <input id="serviceName" name="serviceName" th:field="*{serviceName}" class="form-control" type="text"
+                       disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">描述信息：</label>
+            <div class="col-sm-8">
+                <input id="description" name="description" th:field="*{description}" class="form-control" type="text">
+            </div>
+        </div>
+        <!-- <div class="form-group">
+             <label class="col-sm-3 control-label">修改时间：</label>
+             <div class="col-sm-8">
+                 <input id="dataTime" name="dataTime" th:field="*{dataTime}" class="form-control" type="text">
+             </div>
+         </div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">wid号（唯一）：</label>
+            <div class="col-sm-8">
+                <input id="wid" name="wid" th:field="*{wid}" class="form-control" type="text" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">开放的端口：</label>
+            <div class="col-sm-8">
+                <input id="wiport" name="wiport" th:field="*{wiport}" class="form-control" type="text"
+                       onchange="portChange(this)">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">开放的端口：</label>
+            <div class="col-sm-8">
+                <input id="woport" name="woport" th:field="*{woport}" class="form-control" type="text">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">协议：</label>
+            <div class="col-sm-8">
+                <!--                <input id="protocol" name="protocol" th:field="*{protocol}" class="form-control" type="text">-->
+                <select class="form-control" name="protocol" id="protocol" th:field="*{protocol}"
+                        onchange="protocolChange()">
+                    <option value="TCP">TCP</option>
+                    <option value="UDP">UDP</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">授权主机：</label>
+            <div class="col-sm-8">
+                <input id="allowIp" name="allowIp" th:field="*{allowIp}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">入口端参数：</label>
+            <div class="col-sm-8">
+                <input id="inParmsa" name="inParmsa" th:field="*{inParmsa}" class="form-control" type="text" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">单向网卡IP：</label>
+            <div class="col-sm-8">
+                <input id="inParmsb" name="inParmsb" th:field="*{inParmsb}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">服务器地址：</label>
+            <div class="col-sm-8">
+                <input id="outParms" name="outParms" th:field="*{outParms}" class="form-control" type="text"
+                       onchange="checkOutParmsOk(this)">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">日志是否开启：</label>
+            <div class="col-sm-8">
+                <!--                    <input id="logEnable" name="logEnable" th:field="*{logEnable}" class="form-control" type="text">-->
+                <select class="form-control" name="logEnable" id="log_enable" th:field="*{logEnable}">
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">日志文件位置：</label>
+            <div class="col-sm-8">
+                <input id="logfile" name="logfile" th:field="*{logfile}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否启用：</label>
+            <div class="col-sm-8">
+                <!--                    <input id="isEnable" name="isEnable" th:field="*{isEnable}" class="form-control" type="text">-->
+                <select class="form-control" name="isEnable" id="is_enable" th:field="*{isEnable}">
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-control-static col-sm-offset-9">
+                <button type="submit" class="btn btn-primary" id="submit">提交</button>
+                <button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+
+    var prefix = ctx + "module/wdiodeumtService"
+    $("#form-wdiodeumtService-edit").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        },
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/edit", $('#form-wdiodeumtService-edit').serialize());
+        }
+    });
+
+    function portChange(item) {
+        let inParmsa = $("#inParmsa");
+        inParmsa.val(inParmsa.val().split(":")[0] + ':' + $(item).val() + ',fork');
+        let inParmsb = $("#inParmsb");
+        inParmsb.val(inParmsb.val().split(":")[0] + ':' + (inParmsb.val().split(":")[1]) + ':' + $(item).val());
+        $("#woport").val($(item).val());
+        console.log($("#woport").val())
+
+        if ($("#wiport").val().trim() === '') {
+            $.modal.alertWarning("端口不能为空");
+            return;
+        }
+        $.modal.loading("正在检查本地端口可用性，请稍后...");
+
+        $.ajax({
+            url: prefix + "/checkPort",
+            data: {"port": $(item).val()},
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    $.modal.closeLoading();
+                    $("#submit").prop("disabled", false);
+                    $("#wiport").css("border", "1px solid green")
+                } else {
+                    $.modal.closeLoading();
+
+                    $.modal.alertWarning("本地端口已被占用");
+                    $("#submit").prop("disabled", true);
+                    $("#wiport").css("border", "1px solid red")
+
+                    return false;
+                }
+            }
+        })
+    }
+
+    function protocolChange() {
+        let select = $("#protocol option:selected");
+        let inParmsa = $("#inParmsa");
+        //UDP-LISTEN:14545,fork
+        inParmsa.val(select.val() + "-" + inParmsa.val().split("-")[1])
+    }
+
+    //检查远程端口是否被占用
+    function checkOutParmsOk(item) {
+        let remoteIp = $(item).val().split(":")[1];
+        let port = $(item).val().split(":")[2];
+        $.modal.loading("正在检查远端端口可用性，请稍后...");
+        $.ajax({
+            url: prefix + "/checkRemote",
+            data: {
+                "remoteIp": remoteIp,
+                "remotePort": port
+            },
+            type: "post",
+            error: function (data) {
+                $.modal.alertWarning("系统错误")
+            },
+
+            success: function (data) {
+                if (data.code == 0) {
+                    $.modal.closeLoading();
+                    $("#submit").prop("disabled", false);
+                    $("#outParms").css("border", "1px solid green")
+
+                } else {
+                    $.modal.alertWarning("远端端口已被占用");
+                    $("#submit").prop("disabled", false);
+                    $("#outParms").css("border", "1px solid red")
+
+                    return false;
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

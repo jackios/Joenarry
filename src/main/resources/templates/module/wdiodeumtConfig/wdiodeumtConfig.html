@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.reversion()" shiro:hasPermission="module:wdiodeumtConfig:view">
+				<i class="fa fa-gear"></i> 版本管理
+			</a>
+			<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.general('核心配置-上传配置文件')" shiro:hasPermission="module:wdiodeumtConfig:view">
+				<i class="fa fa-upload"></i> 上传
+			</a>
+<!--
+			<a class="btn btn-outline btn-success btn-rounded" onclick="downloadF()" shiro:hasPermission="module:table:add">
+				<i class="fa fa-download"></i> 下载文件
+			</a>
+			<a class="btn btn-outline btn-primary btn-rounded" onclick="fileSync()" shiro:hasPermission="module:wdiodeumtConfig:view">
+				<i class="glyphicon glyphicon-refresh icon-refresh"></i> 文件同步
+			</a>
+-->
+			<a class="btn btn-outline btn-primary btn-rounded" onclick="uploadToDB()" shiro:hasPermission="module:wdiodeumtConfig:view">
+				<i class="glyphicon glyphicon-cloud-upload"></i> 同步本地文件至数据库
+			</a>
+		</div>
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('module:wdiodeumtConfig:view')}]];
+        //var removeFlag = [[${@permission.hasPermi('module:wdiodeConfig:remove')}]];
+        var prefix = ctx + "module/wdiodeumtConfig";
+
+        function downloadF() {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/DF",
+                data : {
+                },
+                async : false,
+                error : function(data) {
+                    $.modal.alertError("链接出现错误。");
+                },
+                success : function(data) {
+                    if (data.code == 0) {
+                    	var fileContent = window.atob(data.data);
+                    	saveFile(data.nm, fileContent);
+                        
+                    } else {
+                        $.modal.alertError(data.msg);
+                    }
+                }
+            });
+        }
+        
+        function saveFile(fileName, fileContent) {
+            var byteArr = new Array(fileContent.length);
+            for (var i = 0; i < fileContent.length; i++) {
+                byteArr[i] = fileContent.charCodeAt(i);
+            }
+            var blob = new Blob([new Uint8Array(byteArr)], { type: "application/octet-stream" });
+            var url = window.URL.createObjectURL(blob);
+
+            var a = document.createElement("a");
+            if ("download" in a) { // 支持download属性
+                document.body.appendChild(a);
+                a.style = "display:none";
+                a.href = url;
+                //download属性IE不支持。。。
+                a.download = fileName;
+                a.click(); // 触发下载
+                //revokeObjectURL会导致firefox不能下载。。。
+                //window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+            else { //IE 10+
+                if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+                    return navigator.msSaveOrOpenBlob(blob, name);
+                }
+            }
+    	}
+        
+        function reinit() {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/reinit",
+                data : {},
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    $.operate.saveSuccess(data);
+                }
+            });
+        }
+		function fileSync() {
+
+        	$.modal.confirm("是否同步配置文件到其他机器？",function () {
+				$.modal.loading("正在进行文件同步，请稍后...");
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : prefix + "/fileSync",
+					data : {},
+					async : false,
+					error : function(request) {
+						$.modal.closeLoading();
+						$.modal.alertError("系统错误");
+					},
+					success : function(data) {
+						//$.operate.saveSuccess(data);
+						$.operate.ajaxSuccess(data);
+					}
+				});
+			});
+
+		}
+		function uploadToDB() {
+			$.modal.confirm("是否同步本地配置文件至数据库？",function () {
+				$.modal.loading("正在将本地配置文件同步至数据库，请稍后...");
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : prefix + "/uploadToDB",
+					data : {},
+					async : false,
+					error : function(request) {
+						$.modal.closeLoading();
+						$.modal.alertError("系统错误");
+					},
+					success : function(data) {
+						//$.operate.saveSuccess(data);
+						$.operate.ajaxSuccess(data);
+					}
+				});
+			});
+		}
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/version",
+                updateUrl: prefix + "/edit/{id}",
+				generalUrl: prefix + "/general/{flag}",
+                //removeUrl: prefix + "/remove",
+                modalName: "wdiodeumt配置",
+                search: false,
+                showColumns: false,
+                pagination:false,
+                showExport: false,
+                columns: [
+                 //    {
+		        //     checkbox: true
+		        // },
+				// {
+				// 	field : 'id',
+				// 	title : '主键'
+				// },
+				{
+					field : 'w_key',
+					title : '配置项-键'
+				},
+				{
+					field : 'w_value',
+					title : '配置项-值'
+				},
+				{
+					field : 'description', 
+					title : '描述信息'
+				},
+				{
+					field : 'w_time',
+					title : '更改日期'
+				},
+				// {
+				// 	field : 'comment',
+				// 	title : '备注'
+				// },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.w_key + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

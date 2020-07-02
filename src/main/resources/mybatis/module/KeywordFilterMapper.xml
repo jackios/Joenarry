@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.keywordFilter.mapper.KeywordFilterMapper">
+    
+    <resultMap type="KeywordFilter" id="KeywordFilterResult">
+        <result property="id"    column="id"    />
+        <result property="filename"    column="filename"    />
+        <result property="date"    column="date"    />
+        <result property="status"    column="status"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectKeywordFilterVo">
+        select id, filename, date, status, col1, col2, col3 from proc_keyword_filter
+    </sql>
+	
+    <select id="selectKeywordFilterList" parameterType="KeywordFilter" resultMap="KeywordFilterResult">
+        <include refid="selectKeywordFilterVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="filename != null  and filename != '' "> and filename = #{filename}</if>
+             <if test="date != null "> and date = #{date}</if>
+             <if test="status != null  and status != '' "> and status = #{status}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectKeywordFilterById" parameterType="Integer" resultMap="KeywordFilterResult">
+        <include refid="selectKeywordFilterVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertKeywordFilter" parameterType="KeywordFilter">
+        insert into proc_keyword_filter
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="filename != null  and filename != ''  ">filename,</if>
+			<if test="date != null  ">date,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="filename != null  and filename != ''  ">#{filename},</if>
+			<if test="date != null  ">#{date},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateKeywordFilter" parameterType="KeywordFilter">
+        update proc_keyword_filter
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="filename != null  and filename != ''  ">filename = #{filename},</if>
+            <if test="date != null  ">date = #{date},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteKeywordFilterById" parameterType="Integer">
+        delete from proc_keyword_filter where id = #{id}
+    </delete>
+	
+    <delete id="deleteKeywordFilterByIds" parameterType="String">
+        delete from proc_keyword_filter where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

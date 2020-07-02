@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.diskinfo.mapper.DiskinfoMapper">
+    
+    <resultMap type="Diskinfo" id="DiskinfoResult">
+        <result property="id"    column="id"    />
+        <result property="diskName"    column="disk_name"    />
+        <result property="diskSize"    column="disk_size"    />
+        <result property="diskUsed"    column="disk_used"    />
+        <result property="diskAvilabel"    column="disk_avilabel"    />
+        <result property="diskUsedPercent"    column="disk_used_percent"    />
+        <result property="mountPath"    column="mount_path"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+    <resultMap type="DiskInformation" id="DiskInfomationResult">
+        <result property="id"    column="id"    />
+        <result property="diskName"    column="disk_name"    />
+        <result property="diskSize"    column="disk_size"    />
+        <result property="diskUsed"    column="disk_used"    />
+        <result property="diskAvilabel"    column="disk_avilabel"    />
+        <result property="diskUsedPercent"    column="disk_used_percent"    />
+        <result property="mountPath"    column="mount_path"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+
+	
+	<sql id="selectDiskinfoVo">
+        select id, disk_name, disk_size, disk_used, disk_avilabel, disk_used_percent, mount_path, col1, col2, col3 from proc_diskinfo
+    </sql>
+	
+    <select id="selectDiskinfoList" parameterType="Diskinfo" resultMap="DiskinfoResult">
+        <include refid="selectDiskinfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="diskName != null  and diskName != '' "> and disk_name = #{diskName}</if>
+             <if test="diskSize != null  and diskSize != '' "> and disk_size = #{diskSize}</if>
+             <if test="diskUsed != null  and diskUsed != '' "> and disk_used = #{diskUsed}</if>
+             <if test="diskAvilabel != null  and diskAvilabel != '' "> and disk_avilabel = #{diskAvilabel}</if>
+             <if test="diskUsedPercent != null  and diskUsedPercent != '' "> and disk_used_percent = #{diskUsedPercent}</if>
+             <if test="mountPath != null  and mountPath != '' "> and mount_path = #{mountPath}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    <select id="selectDiskInformationList" parameterType="DiskInformation" resultMap="DiskinfoResult">
+        <include refid="selectDiskinfoVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="diskName != null  and diskName != '' "> and disk_name = #{diskName}</if>
+            <if test="diskSize != null  and diskSize != '' "> and disk_size = #{diskSize}</if>
+            <if test="diskUsed != null  and diskUsed != '' "> and disk_used = #{diskUsed}</if>
+            <if test="diskAvilabel != null  and diskAvilabel != '' "> and disk_avilabel = #{diskAvilabel}</if>
+            <if test="diskUsedPercent != null  and diskUsedPercent != '' "> and disk_used_percent = #{diskUsedPercent}</if>
+            <if test="mountPath != null  and mountPath != '' "> and mount_path = #{mountPath}</if>
+            <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+            <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+            <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+        </where>
+    </select>
+
+
+    <select id="selectDiskinfoById" parameterType="Integer" resultMap="DiskinfoResult">
+        <include refid="selectDiskinfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDiskinfo" parameterType="Diskinfo">
+        insert into proc_diskinfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="diskName != null  and diskName != ''  ">disk_name,</if>
+			<if test="diskSize != null  and diskSize != ''  ">disk_size,</if>
+			<if test="diskUsed != null  and diskUsed != ''  ">disk_used,</if>
+			<if test="diskAvilabel != null  and diskAvilabel != ''  ">disk_avilabel,</if>
+			<if test="diskUsedPercent != null  and diskUsedPercent != ''  ">disk_used_percent,</if>
+			<if test="mountPath != null  and mountPath != ''  ">mount_path,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="diskName != null  and diskName != ''  ">#{diskName},</if>
+			<if test="diskSize != null  and diskSize != ''  ">#{diskSize},</if>
+			<if test="diskUsed != null  and diskUsed != ''  ">#{diskUsed},</if>
+			<if test="diskAvilabel != null  and diskAvilabel != ''  ">#{diskAvilabel},</if>
+			<if test="diskUsedPercent != null  and diskUsedPercent != ''  ">#{diskUsedPercent},</if>
+			<if test="mountPath != null  and mountPath != ''  ">#{mountPath},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+    <insert id="insertDiskInformation" parameterType="DiskInformation">
+        insert into proc_diskinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,</if>
+            <if test="diskName != null  and diskName != ''  ">disk_name,</if>
+            <if test="diskSize != null  and diskSize != ''  ">disk_size,</if>
+            <if test="diskUsed != null  and diskUsed != ''  ">disk_used,</if>
+            <if test="diskAvilabel != null  and diskAvilabel != ''  ">disk_avilabel,</if>
+            <if test="diskUsedPercent != null  and diskUsedPercent != ''  ">disk_used_percent,</if>
+            <if test="mountPath != null  and mountPath != ''  ">mount_path,</if>
+            <if test="col1 != null  and col1 != ''  ">col1,</if>
+            <if test="col2 != null  and col2 != ''  ">col2,</if>
+            <if test="col3 != null  and col3 != ''  ">col3,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},</if>
+            <if test="diskName != null  and diskName != ''  ">#{diskName},</if>
+            <if test="diskSize != null  and diskSize != ''  ">#{diskSize},</if>
+            <if test="diskUsed != null  and diskUsed != ''  ">#{diskUsed},</if>
+            <if test="diskAvilabel != null  and diskAvilabel != ''  ">#{diskAvilabel},</if>
+            <if test="diskUsedPercent != null  and diskUsedPercent != ''  ">#{diskUsedPercent},</if>
+            <if test="mountPath != null  and mountPath != ''  ">#{mountPath},</if>
+            <if test="col1 != null  and col1 != ''  ">#{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">#{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">#{col3},</if>
+        </trim>
+    </insert>
+
+	 
+    <update id="updateDiskinfo" parameterType="Diskinfo">
+    update proc_diskinfo
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="diskName != null  and diskName != ''  ">disk_name = #{diskName},</if>
+        <if test="diskSize != null  and diskSize != ''  ">disk_size = #{diskSize},</if>
+        <if test="diskUsed != null  and diskUsed != ''  ">disk_used = #{diskUsed},</if>
+        <if test="diskAvilabel != null  and diskAvilabel != ''  ">disk_avilabel = #{diskAvilabel},</if>
+        <if test="diskUsedPercent != null  and diskUsedPercent != ''  ">disk_used_percent = #{diskUsedPercent},</if>
+        <if test="mountPath != null  and mountPath != ''  ">mount_path = #{mountPath},</if>
+        <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+        <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+        <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+    </trim>
+    where id = #{id}
+</update>
+<update id="updateDiskInformation" parameterType="DiskInformation">
+    update proc_diskinfo
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="diskName != null  and diskName != ''  ">disk_name = #{diskName},</if>
+        <if test="diskSize != null  and diskSize != ''  ">disk_size = #{diskSize},</if>
+        <if test="diskUsed != null  and diskUsed != ''  ">disk_used = #{diskUsed},</if>
+        <if test="diskAvilabel != null  and diskAvilabel != ''  ">disk_avilabel = #{diskAvilabel},</if>
+        <if test="diskUsedPercent != null  and diskUsedPercent != ''  ">disk_used_percent = #{diskUsedPercent},</if>
+        <if test="mountPath != null  and mountPath != ''  ">mount_path = #{mountPath},</if>
+        <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+        <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+        <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+    </trim>
+    where id = #{id}
+</update>
+
+	<delete id="deleteDiskinfoById" parameterType="Integer">
+        delete from proc_diskinfo where id = #{id}
+    </delete>
+	
+    <delete id="deleteDiskinfoByIds" parameterType="String">
+        delete from proc_diskinfo where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

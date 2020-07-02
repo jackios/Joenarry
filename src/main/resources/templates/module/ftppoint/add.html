@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-ftppoint-add">
+        	<input id="parentId" name="parentId" type="hidden" th:value="${ftppoint.id}" />
+			<div class="form-group">
+				<label class="col-sm-3 control-label">上级端点名称：</label>
+				<div class="col-sm-8">
+					<input id="parentName" name="parentName" class="form-control" th:readonly="true" th:value="${ftppoint.name}" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">端点名称：</label>
+				<div class="col-sm-8">
+					<input id="name" name="name" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">端点描述：</label>
+				<div class="col-sm-8">
+					<input id="description" name="description" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">端点类型：</label>
+				<div class="col-sm-8">
+					<label class="radio-box"> <input type="radio" name="type" value="F" th:checked="true" /> FTP端点 </label>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">用户名：</label>
+				<div class="col-sm-8">
+					<input id="username" name="username" th:readonly="true" th:value="${ftppoint.username}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">安全上下文：</label>
+				<div class="col-sm-8">
+					<input id="safemsg" name="safemsg" th:readonly="true" value="*:object_r:default_t:s0" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">密码：</label>
+				<div class="col-sm-8">
+					<input id="password" name="password"  class="form-control" type="password">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">授权主机：</label>
+				<div class="col-sm-8">
+					<input id="allows" name="allows" value="*" class="form-control" type="text"><!--  --> 
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">参数：</label>
+				<div class="col-sm-8">
+					<input id="perms" name="perms" th:value="ro" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "module/ftppoint"
+		$("#form-ftppoint-add").validate({
+			// rules:{
+			// 	xxxx:{
+			// 		required:true,
+			// 	},
+			// },
+            rules:{
+                type:{
+                    required:true,
+                },
+                name:{
+                    required:true,
+                    remote: {
+                        url: prefix + "/checkFtppointNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "parentId": function() {
+                                return $("input[name='parentId']").val();
+                            },
+                            "name" : function() {
+                                return $.common.trim($("#name").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+                 password: {
+                     required:true,
+                     minlength: 5,
+                 },
+                username: {
+					required:true,
+                    remote: {
+                        url: prefix + "/checkUserNameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            "username" : function() {
+                                return $.common.trim($("#username").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+				},
+                // perms: {
+                //     required:true,
+                // },
+				allows: {
+         			required:true,
+                    remote: {
+                        url: prefix + "/checkAllowIp",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            name: function () {
+                                return $.common.trim($("#allows").val());
+                            }
+                        },
+                        dataFilter: function (data, type) {
+                        	return $.validate.unique(data);
+                        }
+                    }
+        		},
+            },
+            messages: {
+                "name": {
+                    remote: "端点已经存在 或 端点名称包含非法字符，只能由字母、数字和下划线组成"
+                },
+                "allows": {
+                    remote: "主机地址不可有多个*，请重设地址"
+                },
+				"username": {
+                    remote: "用户名已存在 或 用户名包含非法字符，只能由字母、数字和下划线组成"
+				}
+            },
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/add", $('#form-ftppoint-add').serialize());
+			}
+		});
+
+        function doSubmit(index, layero){
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+
+        $(function() {
+            $("#password").parents(".form-group").hide();
+            $("#username").parents(".form-group").hide();
+            $("#perms").parents(".form-group").hide();
+            $("#allows").parents(".form-group").hide();
+            //$('input').on('ifChecked', function(event){
+            	
+            $("#password").parents(".form-group").hide();
+            $("#username").parents(".form-group").hide();
+            //$("#perms").parents(".form-group").hide();
+            //$("#allows").parents(".form-group").hide();
+            var ftppointType = $(event.target).val();
+            $("#password").parents(".form-group").show();
+            $("#username").parents(".form-group").show();
+            //});
+        });
+	</script>
+</body>
+</html>

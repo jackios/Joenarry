@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div id="logid"></div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+        $(function(){
+            var socket;
+            try {
+                url = "ws://[[${ip}]]:[[${port}]]";
+                socket = new WebSocket(url);
+            } catch (e) {
+                $("#logid").val("<br>&nbsp;&nbsp;&nbsp;建立socket连接时发生异常, 请尝试刷新页面重试, 如果问题依旧, 请联系开发人员... ");
+            }
+
+            // socket.onopen = function (event) {
+            // };
+
+            socket.onmessage = function (event) {
+                $("#logid").append("<span>&nbsp;&nbsp;&nbsp;" + event.data + "</span>");
+            };
+
+            socket.onerror = function (event) {
+                $("#logid").append("<span>&nbsp;&nbsp;&nbsp;获取传输详细信息建立连接时出现错误, 导致无法获取详细信息, 可以尝试>刷新页面，重新常看... </span>");
+            };
+        });
+	</script>
+</body>
+</html>

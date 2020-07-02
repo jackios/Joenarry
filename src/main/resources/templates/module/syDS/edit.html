@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-syDS-edit" th:object="${syDS}">
+            <input id="id" name="id" th:field="*{id}"  type="hidden">
+            <div class="form-group">	
+				<label class="col-sm-3 control-label">链接身份：</label>
+				<div class="col-sm-8">
+					<label class="radio-box"> <input type="radio" name="groupId" value="tcn" th:checked=*{groupId=="tcn"} /> 入口端(TCN) </label>
+					<label class="radio-box"> <input type="radio" name="groupId" value="rsw" th:checked=*{groupId=="rsw"} /> 出口端(RSW) </label>
+				</div>
+			</div>
+            <div class="form-group">
+		        <label class="col-sm-3 control-label">数据库驱动：</label>
+		        <div class="col-sm-9">
+		            <input id="dbDriver" name="dbDriver" th:field="*{dbDriver}" type="text" class="form-control" placeholder="若为mysql服务器，则可不填">
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <label class="col-sm-3 control-label">数据库位置：</label>
+		        <div class="col-sm-9">
+		            <input id="ip" name="ip" type="text" th:field="*{ip}" class="form-control" placeholder="数据库所在ip，默认为127.0.0.1">
+		        </div>
+		    </div>
+            <div class="form-group">
+		        <label class="col-sm-3 control-label"><strong>数据库名：</strong></label>
+		        <div class="col-sm-9">
+		            <input id="dataBaseN" name="dataBaseN" th:field="*{dataBaseN}" type="text" class="form-control" placeholder="需要被同步的数据库名">
+		        </div>
+		    </div>
+			<div class="form-group">
+		        <label class="col-sm-3 control-label"><strong>数据库名：</strong></label>
+		        <div class="col-sm-9">
+		            <input id="dataBaseTableN" name="dataBaseTableN" th:field="*{dataBaseTableN}" type="text" class="form-control" placeholder="需要被同步的数据库表名">
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <label class="col-sm-3 control-label"><strong>数据库登陆账号：</strong></label>
+		        <div class="col-sm-9">
+		            <input id="usrn" name="usrn" type="text" th:field="*{usrn}" class="form-control" placeholder="用于登陆数据库的账号">
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <label class="col-sm-3 control-label"><strong>登陆密码：</strong></label>
+		        <div class="col-sm-9">
+		            <input id="usrp" name="usrp" type="password" th:field="*{usrp}" class="form-control"  placeholder="用于登陆数据库的密码">
+		        </div>
+		    </div>
+			<div class="form-group">
+		        <label class="col-sm-3 control-label">接收ip：</label>
+		        <div class="col-sm-9">
+		            <input id="registrationUrl" name="registrationUrl"  th:field="*{registrationUrl}" type="text" class="form-control" placeholder="默认为最新本地服务ip">
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <label class="col-sm-3 control-label">检测频率（单位ms）：</label>
+		        <div class="col-sm-9">
+		            <input id="routingTime" name="routingTime" type="text" th:field="*{routingTime}" class="form-control" placeholder="默认为5000">
+		        </div>
+		    </div>
+		    <div class="form-group">
+		        <label class="col-sm-3 control-label">同步频率（单位ms）：</label>
+		        <div class="col-sm-9">
+		            <input id="pushTime" name="pushTime" th:field="*{pushTime}" type="text"  class="form-control" placeholder="莫认为10000">
+		        </div>
+		    </div>
+		  	<div class="form-group">	
+				<label class="col-sm-3 control-label">意外断开后不再重发：</label>
+				<div class="col-sm-8">
+					<label class="radio-box"> <input type="radio" name="dontResend" value="on" th:field="*{dontResend}" /> 是 </label>
+					<label class="radio-box"> <input type="radio" name="dontResend" value="off" th:field="*{dontResend}"  /> 否 </label>
+				</div>
+			</div>
+           
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-9">
+					<button type="submit" class="btn btn-primary">提交</button>
+					<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "module/syDS"
+		$("#form-syDS-edit").validate({
+			//rules:{
+			//	xxxx:{
+			//		required:true,
+			//	},
+			//},
+			rules:{
+				dataBaseN:{
+                    required:true,
+                },
+				dataBaseTableN:{
+                    required:true,
+                },
+                usrn: {
+                    required: true,
+				},
+				usrp: {
+                    required: true
+                }
+            },
+            messages: {
+                "dataBaseN": {
+                    required: "数据库名不能为空"
+                },
+                "dataBaseTableN": {
+                    required: "数据库表名不能为空"
+                },
+                "usrn" : {
+                    required: "数据库账号不能为空"
+                },
+                "usrp" : {
+                    required: "数据库密码不能为空"
+                }
+            },
+			submitHandler: function(form) {
+				$.operate.save(prefix + "/edit", $('#form-syDS-edit').serialize());
+			}
+		});
+	</script>
+</body>
+</html>

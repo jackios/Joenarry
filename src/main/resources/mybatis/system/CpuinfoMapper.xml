@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.system.user.mapper.CpuinfoMapper">
+    
+    <resultMap type="Cpuinfo" id="CpuinfoResult">
+        <result property="id"    column="id"    />
+        <result property="oma"    column="oma"    />
+        <result property="fma"    column="fma"    />
+        <result property="ftma"    column="ftma"    />
+        <result property="idle"    column="idle"    />
+        <result property="user"    column="user"    />
+        <result property="system"    column="system"    />
+        <result property="iowait"    column="iowait"    />
+        <result property="dataTime"    column="data_time"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectCpuinfoVo">
+        select id, oma, fma, ftma, idle, user, system, iowait, data_time, col1, col2, col3 from proc_cpuinfo
+    </sql>
+	
+    <select id="selectCpuinfoList" parameterType="Cpuinfo" resultMap="CpuinfoResult">
+        <include refid="selectCpuinfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="oma != null "> and oma = #{oma}</if>
+             <if test="fma != null "> and fma = #{fma}</if>
+             <if test="ftma != null "> and ftma = #{ftma}</if>
+             <if test="idle != null "> and idle = #{idle}</if>
+             <if test="user != null "> and user = #{user}</if>
+             <if test="system != null "> and system = #{system}</if>
+             <if test="iowait != null "> and iowait = #{iowait}</if>
+             <if test="dataTime != null "> and data_time = #{dataTime}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+        ORDER BY data_time DESC LIMIT 15
+    </select>
+    
+    <select id="selectCpuinfoById" parameterType="Integer" resultMap="CpuinfoResult">
+        <include refid="selectCpuinfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCpuinfo" parameterType="Cpuinfo">
+        insert into proc_cpuinfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="oma != null  ">oma,</if>
+			<if test="fma != null  ">fma,</if>
+			<if test="ftma != null  ">ftma,</if>
+			<if test="idle != null  ">idle,</if>
+			<if test="user != null  ">user,</if>
+			<if test="system != null  ">system,</if>
+			<if test="iowait != null  ">iowait,</if>
+			<if test="dataTime != null  ">data_time,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="oma != null  ">#{oma},</if>
+			<if test="fma != null  ">#{fma},</if>
+			<if test="ftma != null  ">#{ftma},</if>
+			<if test="idle != null  ">#{idle},</if>
+			<if test="user != null  ">#{user},</if>
+			<if test="system != null  ">#{system},</if>
+			<if test="iowait != null  ">#{iowait},</if>
+			<if test="dataTime != null  ">#{dataTime},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateCpuinfo" parameterType="Cpuinfo">
+        update proc_cpuinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="oma != null  ">oma = #{oma},</if>
+            <if test="fma != null  ">fma = #{fma},</if>
+            <if test="ftma != null  ">ftma = #{ftma},</if>
+            <if test="idle != null  ">idle = #{idle},</if>
+            <if test="user != null  ">user = #{user},</if>
+            <if test="system != null  ">system = #{system},</if>
+            <if test="iowait != null  ">iowait = #{iowait},</if>
+            <if test="dataTime != null  ">data_time = #{dataTime},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteCpuinfoById" parameterType="Integer">
+        delete from proc_cpuinfo where id = #{id}
+    </delete>
+	
+    <delete id="deleteCpuinfoByIds" parameterType="String">
+        delete from proc_cpuinfo where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

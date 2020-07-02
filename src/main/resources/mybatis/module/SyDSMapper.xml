@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.syDS.mapper.SyDSMapper">
+    
+    <resultMap type="SyDS" id="SyDSResult">
+        <result property="id"    column="id"    />
+        <result property="externalId"    column="externalId"    />
+        <result property="groupId"    column="groupId"    />
+        <result property="dbDriver"    column="dbDriver"    />
+        <result property="ip"    column="ip"    />
+        <result property="dataBaseN"    column="dataBaseN"    />
+     	<result property="dataBaseTableN"    column="dataBaseTableN"    />
+        <result property="usrn"    column="usrn"    />
+        <result property="usrp"    column="usrp"    />
+        <result property="registrationUrl"    column="registrationUrl"    />
+        <result property="routingTime"    column="routingTime"    />
+        <result property="pushTime"    column="pushTime"    />
+        <result property="dontResend"    column="dontResend"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<resultMap type="SyDS" id="rsw2Result">
+        <result property="col3"    column="load_row_count"    />
+    </resultMap>
+  	<resultMap type="SyDS" id="tcn2Result">
+        <result property="col3"    column="data_row_count"    />
+    </resultMap>
+    
+	<sql id="selectSyDSVo">
+        select id, externalId, groupId, dbDriver, ip, dataBaseN, dataBaseTableN, usrn, usrp, registrationUrl, routingTime, pushTime, dontResend, col1, col2, col3 from sys_sy_d_s
+    </sql>
+	
+    <select id="selectSyDSList" parameterType="SyDS" resultMap="SyDSResult">
+        <include refid="selectSyDSVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="externalId != null "> and externalId = #{externalId}</if>
+             <if test="groupId != null  and groupId != '' "> and groupId = #{groupId}</if>
+             <if test="dbDriver != null  and dbDriver != '' "> and dbDriver = #{dbDriver}</if>
+             <if test="ip != null  and ip != '' "> and ip = #{ip}</if>
+             <if test="dataBaseN != null  and dataBaseN != '' "> and dataBaseN = #{dataBaseN}</if>
+          	 <if test="dataBaseTableN != null  and dataBaseTableN != '' "> and dataBaseTableN = #{dataBaseTableN}</if>
+             <if test="usrn != null  and usrn != '' "> and usrn = #{usrn}</if>
+             <if test="usrp != null  and usrp != '' "> and usrp = #{usrp}</if>
+             <if test="registrationUrl != null  and registrationUrl != '' "> and registrationUrl = #{registrationUrl}</if>
+             <if test="routingTime != null "> and routingTime = #{routingTime}</if>
+             <if test="pushTime != null "> and pushTime = #{pushTime}</if>
+             <if test="dontResend != null  and dontResend != '' "> and dontResend = #{dontResend}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectSyDSById" parameterType="Integer" resultMap="SyDSResult">
+        <include refid="selectSyDSVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectSyDSing" parameterType="String" resultMap="SyDSResult">
+        <include refid="selectSyDSVo"/>
+        where col1 != '否'  and col1 != '无'
+    </select>
+    
+    <select id="selectSyDSByGroupId" parameterType="String" resultMap="SyDSResult">
+        <include refid="selectSyDSVo"/>
+        where groupId = #{groupId}
+    </select>
+    
+    <select id="upcol2tcn" parameterType="String" resultMap="tcn2Result">
+        select data_row_count from  sym_outgoing_batch where channel_id = 'to_corp' and create_time >= #{date}
+    </select>
+    
+    <select id="upcol2rsw" parameterType="String" resultMap="rsw2Result">
+        select load_row_count from  sym_incoming_batch where channel_id = 'to_corp' and create_time >= #{date}
+    </select>
+    
+    <insert id="insertSyDS" parameterType="SyDS">
+        insert into sys_sy_d_s
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="externalId != null  ">externalId,</if>
+			<if test="groupId != null  and groupId != ''  ">groupId,</if>
+			<if test="dbDriver != null  and dbDriver != ''  ">dbDriver,</if>
+			<if test="ip != null  and ip != ''  ">ip,</if>
+			<if test="dataBaseN != null  and dataBaseN != ''  ">dataBaseN,</if>
+			<if test="dataBaseTableN != null  and dataBaseTableN != ''  ">dataBaseTableN,</if>
+			<if test="usrn != null  and usrn != ''  ">usrn,</if>
+			<if test="usrp != null  and usrp != ''  ">usrp,</if>
+			<if test="registrationUrl != null  and registrationUrl != ''  ">registrationUrl,</if>
+			<if test="routingTime != null  ">routingTime,</if>
+			<if test="pushTime != null  ">pushTime,</if>
+			<if test="dontResend != null  and dontResend != ''  ">dontResend,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="externalId != null  ">#{externalId},</if>
+			<if test="groupId != null  and groupId != ''  ">#{groupId},</if>
+			<if test="dbDriver != null  and dbDriver != ''  ">#{dbDriver},</if>
+			<if test="ip != null  and ip != ''  ">#{ip},</if>
+			<if test="dataBaseN != null  and dataBaseN != ''  ">#{dataBaseN},</if>
+			<if test="dataBaseTableN != null  and dataBaseTableN != ''  ">#{dataBaseTableN},</if>
+			<if test="usrn != null  and usrn != ''  ">#{usrn},</if>
+			<if test="usrp != null  and usrp != ''  ">#{usrp},</if>
+			<if test="registrationUrl != null  and registrationUrl != ''  ">#{registrationUrl},</if>
+			<if test="routingTime != null  ">#{routingTime},</if>
+			<if test="pushTime != null  ">#{pushTime},</if>
+			<if test="dontResend != null  and dontResend != ''  ">#{dontResend},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateSyDS" parameterType="SyDS">
+        update sys_sy_d_s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="externalId != null  ">externalId = #{externalId},</if>
+            <if test="groupId != null  and groupId != ''  ">groupId = #{groupId},</if>
+            <if test="dbDriver != null  and dbDriver != ''  ">dbDriver = #{dbDriver},</if>
+            <if test="ip != null  and ip != ''  ">ip = #{ip},</if>
+            <if test="dataBaseN != null  and dataBaseN != ''  ">dataBaseN = #{dataBaseN},</if>
+         	<if test="dataBaseTableN != null  and dataBaseTableN != ''  ">dataBaseTableN = #{dataBaseTableN},</if>
+            <if test="usrn != null  and usrn != ''  ">usrn = #{usrn},</if>
+            <if test="usrp != null  and usrp != ''  ">usrp = #{usrp},</if>
+            <if test="registrationUrl != null  and registrationUrl != ''  ">registrationUrl = #{registrationUrl},</if>
+            <if test="routingTime != null  ">routingTime = #{routingTime},</if>
+            <if test="pushTime != null  ">pushTime = #{pushTime},</if>
+            <if test="dontResend != null  and dontResend != ''  ">dontResend = #{dontResend},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<update id="ResetSyDS" parameterType="Integer">
+        update sys_sy_d_s set col1 = '无' where col1 &lt;&gt; '是'; 
+    </update>
+    
+    
+	<delete id="deleteSyDSById" parameterType="Integer">
+        delete from sys_sy_d_s where id = #{id}
+    </delete>
+    
+    <delete id="deleteSyDSByGroupId" parameterType="String">
+        delete from sys_sy_d_s where groupId = #{groupId}
+    </delete>
+	
+    <delete id="deleteSyDSByIds" parameterType="String">
+        delete from sys_sy_d_s where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

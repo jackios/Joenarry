@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.table.mapper.TableMapper">
+    
+    <resultMap type="Table" id="TableResult">
+        <result property="id"    column="id"    />
+        <result property="ip"    column="ip"    />
+        <result property="text"    column="text"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectTableVo">
+        select id, ip, text, create_time, col1, col2, col3 from ip_table
+    </sql>
+	
+    <select id="selectTableList" parameterType="Table" resultMap="TableResult">
+        <include refid="selectTableVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="ip != null  and ip != '' "> and ip = #{ip}</if>
+             <if test="text != null  and text != '' "> and text = #{text}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectTableById" parameterType="Integer" resultMap="TableResult">
+        <include refid="selectTableVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTable" parameterType="Table">
+        insert into ip_table
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="ip != null  and ip != ''  ">ip,</if>
+			<if test="text != null  and text != ''  ">text,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="ip != null  and ip != ''  ">#{ip},</if>
+			<if test="text != null  and text != ''  ">#{text},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateTable" parameterType="Table">
+        update ip_table
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ip != null  and ip != ''  ">ip = #{ip},</if>
+            <if test="text != null  and text != ''  ">text = #{text},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteTableById" parameterType="Integer">
+        delete from ip_table where id = #{id}
+    </delete>
+	
+    <delete id="deleteTableByIds" parameterType="String">
+        delete from ip_table where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

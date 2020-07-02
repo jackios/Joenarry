@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<br><br><br>
+	<div class="row">
+		<div th:if="${errorMsg}" class="col-sm-8 col-sm-offset-3" style="text-align: left; color: #ac2925">
+			<span th:text="${errorMsg}"></span>
+		</div>
+		<div th:if="${trial}" class="col-sm-8 col-sm-offset-3" style="text-align: left; color: #ac2925">
+			注册状态：当前系统尚未注册，系统服务将无法正常运行。
+		</div>
+		<div th:if="${registed}" class="col-sm-8 col-sm-offset-3" style="text-align: left; color: #4cae4c">
+			注册状态：已注册。
+		</div>
+	</div>
+    <div class="container-div">
+		<form class="form-horizontal m" id="form-license-regist" name="form-license-regist">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">识别码：</label>
+				<div class="col-sm-8">
+					<input id="hostid" name="hostid" class="form-control" th:value="${hostid}" th:readonly="true" type="text" placeholder="识别码...">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">注册码：</label>
+				<div class="col-sm-8">
+					<input id="content" name="content" class="form-control" th:value="${content}" th:readonly="${readonly}" type="text" placeholder="请输入注册码...">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">注册时间：</label>
+				<div class="col-sm-8">
+					<input id="dataTime" name="dataTime" th:value="${dataTime}" class="form-control" placeholder="尚未注册..." type="text" readonly="readonly">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-control-static col-sm-offset-5">
+					<button type="submit" class="btn btn-primary" th:disabled="${readonly}">注册</button>
+					&nbsp;&nbsp;
+					<button class="btn btn-danger tabCloseCurrent" type="button">关闭</button>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include :: footer"></div>
+	<script th:inline="JavaScript">
+        $('.tabCloseCurrent').on('click', function () {
+            $($(parent.parent.parent.document).contents()).find('.page-tabs-content').find('.active i').trigger("click");
+        });
+
+        var prefix = ctx + "module/license"
+
+        $("#form-license-regist").validate({
+            rules: {
+                content: {
+                    required: true,
+                },
+            },
+            submitHandler: function(form) {
+                $.operate.postAndRefresh(prefix + "/save", $('#form-license-regist').serialize());
+                //$.operate.save(prefix + "/save", $('#form-license-regist').serialize());
+
+				//console.info($($($(parent.parent.parent.document).contents()).find('.tabReload')));
+                //$($($(parent.parent.parent.document).contents()).find('.tabReload')).trigger("click");
+            }
+        });
+	</script>
+</body>
+</html>

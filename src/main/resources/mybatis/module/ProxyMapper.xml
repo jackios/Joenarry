@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cs2c.project.module.proxy.mapper.ProxyMapper">
+    
+    <resultMap type="Proxy" id="ProxyResult">
+        <result property="id"    column="id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="serviceName"    column="service_name"    />
+        <result property="method"    column="method"    />
+        <result property="protocol"    column="protocol"    />
+        <result property="host"    column="host"    />
+        <result property="allows"    column="allows"    />
+        <result property="path"    column="path"    />
+        <result property="port"    column="port"    />
+        <result property="elementType"    column="element_type"    />
+        <result property="elementTypeFileIn"    column="element_type_file_in"    />
+        <result property="elementTypeCheckIn"    column="element_type_check_in"    />
+        <result property="elementTypeFileOut"    column="element_type_file_out"    />
+        <result property="elementTypeCheckOut"    column="element_type_check_out"    />
+        <result property="attachment"    column="attachment"    />
+        <result property="attachmentFn"    column="attachment_fn"    />
+        <result property="attachmentCon"    column="attachment_con"    />
+        <result property="reqBackgate"    column="req_backgate"    />
+        <result property="reqHeader"    column="req_header"    />
+        <result property="reqHeaderC1"    column="req_header_c1"    />
+        <result property="reqHeaderC2"    column="req_header_c2"    />
+        <result property="reqUrllock"    column="req_urllock"    />
+        <result property="reqPath"    column="req_path"    />
+        <result property="col1"    column="col1"    />
+        <result property="col2"    column="col2"    />
+        <result property="col3"    column="col3"    />
+    </resultMap>
+	
+	<sql id="selectProxyVo">
+        select id, service_id, service_name, method, protocol, host, allows, path, port, attachment, element_type, 
+        element_type_file_in, element_type_check_in, element_type_file_out, element_type_check_out, 
+        attachment_fn, attachment_con, req_backgate, req_header, req_header_c1, req_header_c2, req_urllock, req_path, 
+        col1, col2, col3 from proc_proxy
+    </sql>
+	
+    <select id="selectProxyList" parameterType="Proxy" resultMap="ProxyResult">
+        <include refid="selectProxyVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="serviceId != null  and serviceId != '' "> and service_id = #{serviceId}</if>
+             <if test="serviceName != null  and serviceName != '' "> and service_name = #{serviceName}</if>
+             <if test="method != null  and method != '' "> and method = #{method}</if>
+             <if test="protocol != null  and protocol != '' "> and protocol = #{protocol}</if>
+             <if test="host != null  and host != '' "> and host = #{host}</if>
+             <if test="allows != null  and allows != '' "> and allows = #{allows}</if>
+             <if test="path != null  and path != '' "> and path = #{path}</if>
+             <if test="port != null "> and port = #{port}</if>
+             <if test="elementType != null  and elementType != '' "> and element_type = #{elementType}</if>
+             <if test="elementTypeFileIn != null  and elementTypeFileIn != '' "> and element_type_file_in = #{elementTypeFileIn}</if>
+             <if test="elementTypeCheckIn != null  and elementTypeCheckIn != '' "> and element_type_check_in = #{elementTypeCheckIn}</if>
+             <if test="elementTypeFileOut != null  and elementTypeFileOut != '' "> and element_type_file_out = #{elementTypeFileOut}</if>
+             <if test="elementTypeCheckOut != null  and elementTypeCheckOut != '' "> and element_type_check_out = #{elementTypeCheckOut}</if>
+             <if test="attachment != null  and attachment != '' "> and attachment = #{attachment}</if>
+             <if test="attachmentFn != null  and attachmentFn != '' "> and attachment_fn = #{attachmentFn}</if>
+             <if test="attachmentCon != null  and attachmentCon != '' "> and attachment_con = #{attachmentCon}</if>
+             <if test="reqBackgate != null  and reqBackgate != '' "> and req_backgate = #{reqBackgate}</if>
+             <if test="reqHeader != null  and reqHeader != '' "> and req_header = #{reqHeader}</if>
+             <if test="reqHeaderC1 != null  and reqHeaderC1 != '' "> and req_header_c1 = #{reqHeaderC1}</if>
+             <if test="reqHeaderC2 != null  and reqHeaderC2 != '' "> and req_header_c2 = #{reqHeaderC2}</if>
+             <if test="reqUrllock != null  and reqUrllock != '' "> and req_urllock = #{reqUrllock}</if>
+             <if test="reqPath != null  and reqPath != '' "> and req_path = #{reqPath}</if>
+             <if test="col1 != null  and col1 != '' "> and col1 = #{col1}</if>
+             <if test="col2 != null  and col2 != '' "> and col2 = #{col2}</if>
+             <if test="col3 != null  and col3 != '' "> and col3 = #{col3}</if>
+         </where>
+    </select>
+    
+    <select id="selectProxyById" parameterType="Integer" resultMap="ProxyResult">
+        <include refid="selectProxyVo"/>
+        where id = #{id}
+    </select>
+        
+  	<select id="selectProxyByServiceId" parameterType="String" resultMap="ProxyResult">
+        <include refid="selectProxyVo"/>
+        where service_id = #{service_id}
+    </select>
+    
+    <insert id="insertProxy" parameterType="Proxy">
+        insert into proc_proxy
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="serviceId != null  and serviceId != ''  ">service_id,</if>
+			<if test="serviceName != null  and serviceName != ''  ">service_name,</if>
+			<if test="method != null  and method != ''  ">method,</if>
+			<if test="protocol != null  and protocol != ''  ">protocol,</if>
+			<if test="host != null  and host != ''  ">host,</if>
+			<if test="allows != null  and allows != ''  ">allows,</if>
+			<if test="path != null  and path != ''  ">path,</if>
+			<if test="port != null  ">port,</if>
+			<if test="elementType != null  and elementType != ''  ">element_type,</if>
+			<if test="elementTypeFileIn != null  and elementTypeFileIn != ''  ">element_type_file_in,</if>
+			<if test="elementTypeCheckIn != null  and elementTypeCheckIn != ''  ">element_type_check_in,</if>
+			<if test="elementTypeFileOut != null  and elementTypeFileOut != ''  ">element_type_file_out,</if>
+			<if test="elementTypeCheckOut != null  and elementTypeCheckOut != ''  ">element_type_check_out,</if>
+			<if test="attachment != null  and attachment != ''  ">attachment,</if>
+			<if test="attachmentFn != null  and attachmentFn != ''  ">attachment_fn,</if>
+			<if test="attachmentCon != null  and attachmentCon != ''  ">attachment_con,</if>
+			<if test="reqBackgate != null  and reqBackgate != ''  ">req_backgate,</if>
+			<if test="reqHeader != null  and reqHeader != ''  ">req_header,</if>
+			<if test="reqHeaderC1 != null  and reqHeaderC1 != ''  ">req_header_c1,</if>
+			<if test="reqHeaderC2 != null  and reqHeaderC2 != ''  ">req_header_c2,</if>
+			<if test="reqUrllock != null  and reqUrllock != ''  ">req_urllock,</if>
+			<if test="reqPath != null  and reqPath != ''  ">req_path,</if>
+			<if test="col1 != null  and col1 != ''  ">col1,</if>
+			<if test="col2 != null  and col2 != ''  ">col2,</if>
+			<if test="col3 != null  and col3 != ''  ">col3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="serviceId != null  and serviceId != ''  ">#{serviceId},</if>
+			<if test="serviceName != null  and serviceName != ''  ">#{serviceName},</if>
+			<if test="method != null  and method != ''  ">#{method},</if>
+			<if test="protocol != null  and protocol != ''  ">#{protocol},</if>
+			<if test="host != null  and host != ''  ">#{host},</if>
+			<if test="allows != null  and allows != ''  ">#{allows},</if>
+			<if test="path != null  and path != ''  ">#{path},</if>
+			<if test="port != null  ">#{port},</if>
+			<if test="elementType != null  and elementType != ''  ">#{elementType},</if>
+			<if test="elementTypeFileIn != null  and elementTypeFileIn != ''  ">#{elementTypeFileIn},</if>
+			<if test="elementTypeCheckIn != null  and elementTypeCheckIn != ''  ">#{elementTypeCheckIn},</if>
+			<if test="elementTypeFileOut != null  and elementTypeFileOut != ''  ">#{elementTypeFileOut},</if>
+			<if test="elementTypeCheckOut != null  and elementTypeCheckOut != ''  ">#{elementTypeCheckOut},</if>
+			<if test="attachment != null  and attachment != ''  ">#{attachment},</if>
+			<if test="attachmentFn != null  and attachmentFn != ''  ">#{attachmentFn},</if>
+			<if test="attachmentCon != null  and attachmentCon != ''  ">#{attachmentCon},</if>
+			<if test="reqBackgate != null  and reqBackgate != ''  ">#{reqBackgate},</if>
+			<if test="reqHeader != null  and reqHeader != ''  ">#{reqHeader},</if>
+			<if test="reqHeaderC1 != null  and reqHeaderC1 != ''  ">#{reqHeaderC1},</if>
+			<if test="reqHeaderC2 != null  and reqHeaderC2 != ''  ">#{reqHeaderC2},</if>
+			<if test="reqUrllock != null  and reqUrllock != ''  ">#{reqUrllock},</if>
+			<if test="reqPath != null  and reqPath != ''  ">#{reqPath},</if>
+			<if test="col1 != null  and col1 != ''  ">#{col1},</if>
+			<if test="col2 != null  and col2 != ''  ">#{col2},</if>
+			<if test="col3 != null  and col3 != ''  ">#{col3},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProxy" parameterType="Proxy">
+        update proc_proxy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="serviceId != null  and serviceId != ''  ">service_id = #{serviceId},</if>
+            <if test="serviceName != null  and serviceName != ''  ">service_name = #{serviceName},</if>
+            <if test="method != null  and method != ''  ">method = #{method},</if>
+            <if test="protocol != null  and protocol != ''  ">protocol = #{protocol},</if>
+            <if test="host != null  and host != ''  ">host = #{host},</if>
+            <if test="allows != null  and allows != ''  ">allows = #{allows},</if>
+            <if test="path != null  and path != ''  ">path = #{path},</if>
+            <if test="port != null  ">port = #{port},</if>
+            <if test="elementType != null  and elementType != ''  ">element_type = #{elementType},</if>
+            <if test="elementTypeFileIn != null  and elementTypeFileIn != ''  ">element_type_file_in = #{elementTypeFileIn},</if>
+            <if test="elementTypeCheckIn != null  and elementTypeCheckIn != ''  ">element_type_check_in = #{elementTypeCheckIn},</if>
+            <if test="elementTypeFileOut != null  and elementTypeFileOut != ''  ">element_type_file_out = #{elementTypeFileOut},</if>
+            <if test="elementTypeCheckOut != null  and elementTypeCheckOut != ''  ">element_type_check_out = #{elementTypeCheckOut},</if>
+            <if test="attachment != null  and attachment != ''  ">attachment = #{attachment},</if>
+            <if test="attachmentFn != null  and attachmentFn != ''  ">attachment_fn = #{attachmentFn},</if>
+            <if test="attachmentCon != null  and attachmentCon != ''  ">attachment_con = #{attachmentCon},</if>
+            <if test="reqBackgate != null  and reqBackgate != ''  ">req_backgate = #{reqBackgate},</if>
+            <if test="reqHeader != null  and reqHeader != ''  ">req_header = #{reqHeader},</if>
+            <if test="reqHeaderC1 != null  and reqHeaderC1 != ''  ">req_header_c1 = #{reqHeaderC1},</if>
+            <if test="reqHeaderC2 != null  and reqHeaderC2 != ''  ">req_header_c2 = #{reqHeaderC2},</if>
+            <if test="reqUrllock != null  and reqUrllock != ''  ">req_urllock = #{reqUrllock},</if>
+            <if test="reqPath != null  and reqPath != ''  ">req_path = #{reqPath},</if>
+            <if test="col1 != null  and col1 != ''  ">col1 = #{col1},</if>
+            <if test="col2 != null  and col2 != ''  ">col2 = #{col2},</if>
+            <if test="col3 != null  and col3 != ''  ">col3 = #{col3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteProxyById" parameterType="Integer">
+        delete from proc_proxy where id = #{id}
+    </delete>
+	
+    <delete id="deleteProxyByIds" parameterType="String">
+        delete from proc_proxy where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

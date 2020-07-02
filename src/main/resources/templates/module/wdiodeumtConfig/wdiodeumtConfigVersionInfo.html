@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<!--<div class="btn-group hidden-xs" id="toolbar" role="group">-->
+			<!--<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.reversion()" shiro:hasPermission="module:wdiodeConfig:add">-->
+				<!--<i class="fa fa-gear"></i> 版本管理-->
+			<!--</a>-->
+			<!--<a class="btn btn-outline btn-success btn-rounded" onclick="$.operate.add()" shiro:hasPermission="module:wdiodeConfig:add">-->
+				<!--<i class="fa fa-upload"></i> 上传-->
+			<!--</a>-->
+		<!--</div>-->
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        //var editFlag = [[${@permission.hasPermi('module:wdiodeConfig:edit')}]];
+        //var removeFlag = [[${@permission.hasPermi('module:wdiodeConfig:remove')}]];
+        var prefix = ctx + "module/wdiodeumtConfig"
+
+        $(function() {
+            var options = {
+                url: prefix + "/viewVersion/" + [[${versionID}]],
+                createUrl: prefix + "/version",
+                updateUrl: prefix + "/edit/{id}",
+                //removeUrl: prefix + "/remove",
+                modalName: "wdiodeumt配置",
+                search: false,
+                showColumns: false,
+                pagination:false,
+                showExport: false,
+                showRefresh: false,
+                showToggle: false,
+                columns: [
+                 //    {
+		        //     checkbox: true
+		        // },
+				// {
+				// 	field : 'id',
+				// 	title : '主键'
+				// },
+				{
+					field : 'w_key',
+					title : '配置项-键'
+				},
+				{
+					field : 'w_value',
+					title : '配置项-值'
+				},
+				{
+					field : 'description', 
+					title : '描述信息'
+				},
+				{
+					field : 'w_time',
+					title : '更改日期'
+				}]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

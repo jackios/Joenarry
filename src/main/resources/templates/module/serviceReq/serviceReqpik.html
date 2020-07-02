@@ -1,0 +1,355 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<body class="gray-bg">
+    <!-- <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div> -->
+    
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 select-info">
+				
+					<div class="select-list">
+						<label class="col-sm-2 control-label" id="l1">总记录数： </label>
+						<div class="col-sm-10">
+							<p class="form-control-static" id="num">0</p>
+						</div>
+						<ul>
+							<li class="col-sm-3" style="width:auto;padding-right:0px;padding-left:0px;">
+								<label class="col-sm-3 control-label" style="width:auto;padding-top:11px;">服务主机：</label>
+								<div class="col-sm-2">
+								    <select class="form-control" id="menu" name="menu" style="width:100px;height:auto;">
+								        <option value="" selected> </option>
+								        
+								    </select>
+								</div>
+							</li>
+							<li class="col-sm-3" style="width:auto;padding-right:0px;padding-left:0px;">
+								<label class="col-sm-3 control-label" style="width:auto;padding-top:11px;">请求年份：</label>
+								<div class="col-sm-2">
+								    <select class="form-control" id="createYear" name="createYear" style="width:100px;height:auto;">
+								        <option value="2016" >2016</option>
+								        <option value="2017" >2017</option>
+								        <option value="2018" >2018</option>
+								        <option value="2019" selected>2019</option>
+								        <option value="2020" >2020</option>
+								        <option value="2021" >2021</option>
+								        <option value="2022" >2022</option>
+								        <option value="2023" >2023</option>
+								        <option value="2024" >2024</option>
+								        <option value="2025" >2025</option>
+								    </select>
+								</div>
+							</li>
+							<li class="col-sm-3" style="width:auto;padding-right:0px;padding-left:0px;">
+								<label class="col-sm-3 control-label" style="width:auto;padding-top:11px;">请求月：</label>
+								<div class="col-sm-2">
+								    <select class="form-control" id="createMonth" name="createMonth" style="width:100px;height:auto;">
+								        <option value="-" selected>无限制</option>
+								        <option value="1" >一月</option>
+								        <option value="2" >二月</option>
+								        <option value="3" >三月</option>
+								        <option value="4" >四月</option>
+								        <option value="5" >五月</option>
+								        <option value="6" >六月</option>
+								        <option value="7" >七月</option>
+								        <option value="8" >八月</option>
+								        <option value="9" >九月</option>
+								        <option value="10" >十月</option>
+								        <option value="11" >十一月</option>
+								        <option value="12" >十二月</option>
+								    </select>
+								</div>
+							</li>
+							<li class="col-sm-3" style="width:auto;padding-right:0px;padding-left:0px;">
+								<label class="col-sm-3 control-label" style="width:auto;padding-top:11px;">请求日期：</label>
+								<div class="col-sm-2">
+								    <select class="form-control" id="createDate" name="createDate" style="width:100px;height:auto;">
+								        <option value="-" selected>无限制</option>
+								        <option value="1" >1日</option>
+								        <option value="2" >2日</option>
+								        <option value="3" >3日</option>
+								        <option value="4" >4日</option>
+								        <option value="5" >5日</option>
+								        <option value="6" >6日</option>
+								        <option value="7" >7日</option>
+								        <option value="8" >8日</option>
+								        <option value="9" >9日</option>
+								        <option value="10" >10日</option>
+								        <option value="11" >11日</option>
+								        <option value="12" >12日</option>
+								        <option value="13" >13日</option>
+								        <option value="14" >14日</option>
+								        <option value="15" >15日</option>
+								        <option value="16" >16日</option>
+								        <option value="17" >17日</option>
+								        <option value="18" >18日</option>
+								        <option value="19" >19日</option>
+								        <option value="20" >20日</option>
+								        <option value="21" >21日</option>
+								        <option value="22" >22日</option>
+								        <option value="23" >23日</option>
+								        <option value="24" >24日</option>
+								        <option value="25" >25日</option>
+								        <option value="26" >26日</option>
+								        <option value="27" >27日</option>
+								        <option value="28" >28日</option>
+								        <option value="29" >29日</option>
+								        <option value="30" >30日</option>
+								        <option value="31" >31日</option>
+								    </select>
+								</div>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="list()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<!--  <a class="btn btn-warning btn-rounded btn-sm" onclick= "list(2019)"><i class="fa fa-refresh"></i>&nbsp;重置</a>-->
+							</li>
+						</ul>
+					</div>
+				
+			    <div th:include="include :: footer"></div>
+				
+			    <canvas id="serviceReqpik" width="1000" height="400" ></canvas>
+			    <script th:inline="javascript">
+			        var editFlag = [[${@permission.hasPermi('module:serviceReq:edit')}]];
+			        var removeFlag = [[${@permission.hasPermi('module:serviceReq:remove')}]];
+			        var prefix = ctx + "module/serviceReqpik"
+			        
+			        window.onload=function()//用window的onload事件，窗体加载完毕的时候
+			        {
+                    	var date=new Date;
+                    	var year=date.getFullYear(); 
+                    	$("#createYear").val(year);
+                    	document.getElementById("l1").style.paddingTop="7px";
+			        	test();
+			        }
+			        
+			        function test() {
+			        	$.ajax({
+			                cache : true,
+			                type : "POST",
+			                url : prefix + "/test",
+			                data : {},
+			                async : false,
+			                error : function(data) {
+			                    $.modal.alertError("链接出现错误。");
+			                },
+			                success : function(data) {
+			                    if (data.code == 0) {
+			                    	addoption(data.msg);
+						        	window.addEventListener("load", list() ,false);
+			                    } else {
+			                        $.modal.alertError(data.msg);
+			                    }
+			                }
+			            });
+			        }
+			        
+			        function addoption(str) {
+			        	var menus = str.split("-");
+			        	   
+			        	if (menus.length >= 2){
+							document.getElementById("num").innerHTML=menus[0];
+			        		for(var i=1 ; i<menus.length ; i++){
+			        			var $newoption=$("#menu").append("<option value='"+menus[i]+"'>"+menus[i]+"</option>");
+			        		}
+			        	}
+			        }
+			        
+			        function getallnum() {
+			        	$.ajax({
+			                cache : true,
+			                type : "POST",
+			                url : prefix + "/listnum",
+			                data : {},
+			                async : false,
+			                error : function(data) {
+			                    $.modal.alertError("链接出现错误。");
+			                },
+			                success : function(data) {
+			                    if (data.code == 0) {
+			                    	document.getElementById("num").innerHTML=data.msg;
+
+			                    } else {
+			                        $.modal.alertError(data.msg);
+			                    }
+			                }
+			            });
+			        }
+			        
+				    $(function() { 
+		                
+			        });
+				    
+			        function list() {
+			        	$.ajax({
+			                cache : true,
+			                type : "POST",
+			                url : prefix + "/list",
+			                data : {
+			                	"host" : $("#menu").val(),
+			                	"createTime" : $("#createYear").val() + "-01-01 00:00:01",
+								"Year" : $("#createYear").val() ,
+								"Month" : $("#createMonth").val() ,
+								"Date" : $("#createDate").val() ,
+			                	},
+			                async : false,
+			                error : function(data) {
+			                    $.modal.alertError("链接出现错误。");
+			                },
+			                success : function(data) {
+			                    if (data.code == 0) {
+			                    	var numdata = data.msg.split("-");
+			                    	pik(numdata);
+			                    } else {
+			                        $.modal.alertError(data.msg);
+			                    }
+			                }
+			            });
+			        }
+			        
+			        
+			        function pik(numdata) {	
+						
+						var data = numdata
+						
+						// 获取上下文
+						var serviceReqpik = document.getElementById('serviceReqpik');
+						var context = serviceReqpik.getContext("2d");
+						
+						context.clearRect(0,0,serviceReqpik.width,serviceReqpik.height);  
+
+	                  	// 绘制背景
+	                  	var gradient = context.createLinearGradient(0,0,0,300);
+	         
+	         
+						// gradient.addColorStop(0,"#e0e0e0");
+						//gradient.addColorStop(1,"#ffffff");
+	         
+	         
+						context.fillStyle = gradient;
+	         
+						context.fillRect(0,0,serviceReqpik.width,serviceReqpik.height);
+	         
+						var realheight = serviceReqpik.height-55;
+	              	    var realwidth = serviceReqpik.width-60;
+	                  	// 描绘边框
+	                  	var grid_cols = data.length + 1; 							//12 + 1
+	                  	var grid_rows = 4;
+	                  	var cell_height = realheight / grid_rows;
+	                  	var cell_width = realwidth / grid_cols;
+	                  	context.lineWidth = 1;
+	                  	context.strokeStyle = "black";
+	         
+	                  	// 结束边框描绘
+	                  	context.beginPath();
+	                  	// 准备画横线
+	                  	/*for(var row = 1; row <= grid_rows; row++){
+	                    	var y = row * cell_height;
+	                    	context.moveTo(0,y);
+	                    	context.lineTo(serviceReqpik.width, y);
+	                  	}*/
+	                  
+	                    //划横线
+	                    context.moveTo(20,realheight);
+	                    context.lineTo(realwidth+20,realheight);
+	                        
+	                    
+
+	                  	
+	                    //画竖线
+	                  	context.moveTo(20,20);
+	                  	context.lineTo(20,realheight);
+	                  	context.lineWidth = 1;
+	                  	context.strokeStyle = "black";
+	                  	context.stroke();
+	                    
+	         
+	                  	var max_v =1;
+	                  
+	                  	for(var i = 0; i<data.length; i++){
+	                    	if (parseInt(data[i]) > parseInt(max_v)) { max_v =data[i];}
+	                  	}
+
+	                  	context.fillStyle="black";
+	                  	context.font="12px";
+	                  	
+	                  	if(max_v > 30){
+                  		context.beginPath();
+	                  	context.setLineDash([5]);
+	                  	for(var i=1; i < 4; i++){
+								context.beginPath();
+		                    	context.moveTo(20,20+(realheight-20)/4*i);
+		                    	context.lineTo(realwidth,20+(realheight-20)/4*i);
+		                    	var s = max_v/4*(4-i);
+		                    	//context.beginPath();
+		                    	context.fillText(s.toFixed(2),10,20+(realheight-20)/4*i);
+		                    	context.stroke();
+		                    }
+	                  	context.beginPath();
+	                  	context.setLineDash([]);
+	                  	}
+	                  	
+		                max_v = max_v * 1.1;
+		                  	
+	                  	// 将数据换算为坐标
+	                  	var points = [];
+	                  	var j=0;
+	                  	for( var i=0; i < data.length; i++){
+	                   		var v= data[i];
+	                    	//if(i%2 == 0){j++;}
+	                    	var px = cell_width *　(i + 1) ;
+	                    	var py = realheight - realheight*(v / max_v);
+	                    	//alert(py);
+	                    	points.push({"x":px,"y":py});
+	                  	}
+	                  	
+	                  	//绘制坐标图形
+	                  	for(var i in points){
+	                    	var p = points[i];
+	                    	context.beginPath();
+	                    	context.fillStyle="green";
+	                    	context.fillRect(p.x,p.y,15,realheight-p.y);
+	                    	 
+	                    	context.fill();
+	                  	}
+	                  //添加文字
+                    	context.beginPath();
+                    	context.fillStyle="black";
+						var s;
+						if (data.length==12){
+							s="月";
+							context.fillText('月份',realwidth+20,realheight+30);
+						}else if(data.length==24){
+							s="时";
+							context.fillText('时间',realwidth+20,realheight+30);
+						}else{
+							s="日";
+							context.fillText('日期',realwidth+20,realheight+30);
+						}
+	               	for(var i in points)
+		                {  
+	               		var p = points[i];	
+	                    	context.fillText(data[i], p.x + 5, p.y - 10);
+	                    
+	                   	context.fillText( Number(i) + Number(1) + s, p.x, realheight+30);
+	                  	}
+		                	
+		              context.fillText('请求数',10,15);
+                 	}
+			                  
+
+			    </script>
+    		</div>
+		</div>
+	</div>
+</body>
+</html>

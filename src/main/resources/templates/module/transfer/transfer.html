@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="btn-group hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-outline btn-warning btn-rounded" onclick="batchProcess('pause')" shiro:hasPermission="module:transfer:add">
+				<i class="fa fa-pause"></i> 批量暂停
+			</a>
+			<a class="btn btn-outline btn-primary btn-rounded" onclick="batchProcess('pass')" shiro:hasPermission="module:transfer:add">
+				<i class="fa fa-play"></i> 批量放行
+			</a>
+			<a class="btn btn-outline btn-danger btn-rounded" onclick="batchProcess('cancel')" shiro:hasPermission="module:transfer:remove">
+				<i class="fa fa-reply"></i> 批量取消
+			</a>
+			<a class="btn btn-outline btn-primary btn-rounded" onclick="downloadF()" shiro:hasPermission="module:table:add">
+				<i class="fa fa-download"></i> 下载文件
+			</a>
+		</div>
+			
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('module:transfer:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('module:transfer:remove')}]];
+        var prefix = ctx + "module/transfer";
+
+        function downloadF() {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/DF",
+                data : {
+                },
+                async : false,
+                error : function(data) {
+                    $.modal.alertError("链接出现错误。");
+                },
+                success : function(data) {
+                    if (data.code == 0) {
+                    	var fileContent = window.atob(data.data);
+                    	saveFile(data.nm, fileContent);
+                        
+                    } else {
+                        $.modal.alertError(data.msg);
+                    }
+                }
+            });
+        }
+        
+        function saveFile(fileName, fileContent) {
+            var byteArr = new Array(fileContent.length);
+            for (var i = 0; i < fileContent.length; i++) {
+                byteArr[i] = fileContent.charCodeAt(i);
+            }
+            var blob = new Blob([new Uint8Array(byteArr)], { type: "application/octet-stream" });
+            var url = window.URL.createObjectURL(blob);
+
+            var a = document.createElement("a");
+            if ("download" in a) { // 支持download属性
+                document.body.appendChild(a);
+                a.style = "display:none";
+                a.href = url;
+                //download属性IE不支持。。。
+                a.download = fileName;
+                a.click(); // 触发下载
+                //revokeObjectURL会导致firefox不能下载。。。
+                //window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+            else { //IE 10+
+                if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+                    return navigator.msSaveOrOpenBlob(blob, name);
+                }
+            }
+    	}
+        
+        function downloadFiles(file, dir) {
+            $.modal.loading("正在导出数据，请稍后...");
+            $.post(prefix + "/download",
+				{
+				    'filename' : file,
+					'path' : dir
+				}
+				, function(result) {
+                if (result.code == web_status.SUCCESS) {
+                    window.location.href = ctx + "common/download?fileName=" + result.msg + "&delete=" + true;
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            });
+        }
+
+        function downloadPreview(file, dir) {
+            $.modal.loading("正在导出数据，请稍后...");
+            $.post(prefix + "/downloadPreview",
+                {
+                    'filename' : file,
+                    'path' : dir
+                }
+                , function(result) {
+                    if (result.code == web_status.SUCCESS) {
+                        window.location.href = ctx + "common/download?fileName=" + result.msg + "&delete=" + true;
+                    } else {
+                        $.modal.alertError(result.msg);
+                    }
+                    $.modal.closeLoading();
+                });
+        }
+
+        function batchProcess(operation) {
+            //var rows = $.common.isEmpty($.table._option.id) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.id);
+            var pids = $.map($('#bootstrap-table').bootstrapTable('getSelections'), function (row) {
+                			return row[$.table._option.columns[5].field];
+						});
+            if (pids.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            var ports = $.map($('#bootstrap-table').bootstrapTable('getSelections'), function (row) {
+                return row[$.table._option.columns[4].field];
+            });
+            $.modal.confirm("确认要对选中的" + pids.length + "条数据执行批量操作吗?", function() {
+                change_status(pids.join(), ports.join(), operation)
+            });
+		}
+
+        function change_status(ports, pids, operation) {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : prefix + "/changeStatus/" + operation,
+                data : {
+                    "ports" : ports,
+					"pids" : pids
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    //$.operate.saveSuccess(data);
+                    //$.table.refresh();
+					if (data.code == 0) {
+                        $.modal.alertSuccess(data.msg);
+                        var start = new Date().getTime();
+                        while (true)
+							if (new Date().getTime() - start > 1000) //1s
+							    break;
+                        $.operate.freshCurrentTab();
+                    } else {
+                        $.modal.alertError(data.msg);
+                    }
+                }
+            });
+        }
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "传输控制",
+				search: false,
+                showColumns: false,
+                pagination: false,
+                showExport: false,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'id', 
+					title : '主键',
+					visible: false
+				},
+				{
+					field : 'transferFile', 
+					title : '文件名',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a data-toggle="tooltip" data-placement="bottom" title="' + row.transferFile + '" href="#" onclick="downloadFiles(\'' + row.transferFile + '\',\'' + row.realDir + '\')"><i class="fa fa-download">&nbsp;</i>' + row.transferFile.substring(0, 18) + '</a> ');
+                        return actions.join('');
+                    }
+				},
+				{
+					field : 'timeStamp', 
+					title : '开始时间' 
+				},
+				{
+					field : 'pid', 
+					title : '进程号' 
+				},
+				{
+					field : 'port', 
+					title : '端口号' 
+				},
+				{
+					field : 'details',
+					visible: false,
+					title : '查看传输详情',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.editCustomTitle(\'' + row.port + '\', \'文件 [' + row.transferFile + '] 传输详情\')"><i class="fa fa-eye"></i>' + row.details + '</a> ');
+                        return actions.join('');
+                    }
+				},
+				{
+					field : 'preview', 
+					title : '结果预览',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        if (row.preview == "generated") {
+                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="downloadPreview(\'' + row.transferFile + '\',\'' + row.realDir + '\')"><i class="fa fa-eye"></i>查看预览</a> ');
+                        } else {
+                            if (row.preview == "notGenerated") {
+                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.genPreview(\'' + prefix + '/genPreview\',\'' + row.realDir + '\',\'' + row.transferFile + '\')"><i class="fa fa-spinner"></i>生成预览</a> ');
+                            } else {
+                                return "<font color='red'>不支持预览</font>";
+
+                            }
+                        }
+                        return actions.join('');
+                    }
+				},
+				{
+					field : 'statusTransfer', 
+					title : '传输状态',
+                    formatter: function(value, row, index) {
+                        if (value == "superTransfer" || value == "transfering") {
+                            return "正在传输……"
+                        } else {
+                            if (value == "autoTranslate" || value == "controlTranslate") {
+                                return "正在转换……"
+                            } else {
+                                if (value == "autoPrepare") {
+                                    return "准备传输……"
+                                } else {
+                                    if (value == "getStateing") {
+                                        return "状态获取中……"
+                                    } else {
+                                        if (value == "convertFailed") {
+                                            return "<font color='red'>转换失败……</font>"
+                                        } else {
+                                            if (value == "notSupportFormat") {
+                                                return "<font color='red'>文件格式不支持……</font>"
+                                            } else {
+                                                return "等待放行……"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+                        if (row.statusTransfer == "autoTranslate") {
+                            actions.push('<a class="btn btn-warning btn-xs ' + editFlag + '" href="#" onclick="change_status(\'' + row.port + '\',\'' + row.pid + '\', \'pause\')"><i class="fa fa-pause"></i>暂停</a> ');
+                        }
+                        if (row.statusTransfer == "controlTranslate" || row.statusTransfer == "controlPrepare") {
+                            actions.push('<a class="btn btn-primary btn-xs ' + editFlag + '" href="#" onclick="change_status(\'' + row.port + '\',\'' + row.pid + '\', \'pass\')"><i class="fa fa-play"></i>放行</a> ');
+                        }
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="change_status(\'' + row.port + '\',\'' + row.pid + '\', \'cancel\')"><i class="fa fa-reply"></i>取消</a>');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
