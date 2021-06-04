@@ -347,7 +347,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.5</version>
+			<version>4.5.13</version>
 		</dependency>
 		<!--刘全禄pom - 2020.06.12 - proxy 文件转换 stop -->
 	</dependencies>
